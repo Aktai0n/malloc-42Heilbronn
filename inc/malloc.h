@@ -5,28 +5,52 @@
 #include <sys/mman.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 
-typedef union u_alloc {
+// typedef union u_alloc {
+//     union {
+//         uint64_t size;
+//         void *next;
+//     } data;
+
+//     char buf[8];
+// } t_alloc;
+
+typedef struct  {
     union {
-        uint64_t size;
-        void *next;
-    } data;
+        void* prev;
+        size_t prev_size;
+    };
 
-    char [8];
+    union {
+        void* next;
+        size_t size;
+    };
 } t_alloc;
+
+#define IS_ALLOCATED_FLAG 0b1
+#define ALLOC_FLAGS (IS_ALLOCATED_FLAG)
 
 // #define GET_ALLOC_SIZE(alloc_node) (uint64_t)(alloc_node)
 
 // returns the true size of an allocated block of memory by
 // masking away the two lowest bits 
-inline uint64_t get_alloc_size(const t_alloc* alloc_node) {
-    return alloc_node->data.size & ~0b11;
+inline size_t get_alloc_size(const t_alloc* alloc_node) {
+    return alloc_node->size & ~ALLOC_FLAGS;
 }
 
 // determines whether the block is currently in use or not
 inline bool is_allocated(const t_alloc* alloc_node) {
-    return alloc_node->data.size & 0b1;
+    return alloc_node->size & IS_ALLOCATED_FLAG;
+}
+
+inline t_alloc* get_next_alloc(const t_alloc* current_node) {
+    return (t_alloc*)(current_node->size & ~ALLOC_FLAGS);
+}
+
+inline t_alloc* get_prev_alloc(const t_alloc* current_node) {
+    
 }
 
 
