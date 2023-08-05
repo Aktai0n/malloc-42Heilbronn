@@ -1,8 +1,6 @@
 # build files
 build/
-libft_malloc.so
-libft_malloc_x86_64_Darwin.so
-libft_malloc_intel_linux
+libft_malloc*
 *.out
 tester
 

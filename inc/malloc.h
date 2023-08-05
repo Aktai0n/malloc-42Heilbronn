@@ -29,7 +29,7 @@ typedef struct  {
     };
 } t_alloc;
 
-#define IS_ALLOCATED_FLAG 0b1
+#define IS_ALLOCATED_FLAG ((size_t)0b1)
 #define ALLOC_FLAGS (IS_ALLOCATED_FLAG)
 
 // #define GET_ALLOC_SIZE(alloc_node) (uint64_t)(alloc_node)
@@ -52,6 +52,9 @@ inline t_alloc* get_next_alloc(const t_alloc* current_node) {
 inline t_alloc* get_prev_alloc(const t_alloc* current_node) {
     
 }
+
+void* malloc(size_t size);
+void free(void* ptr);
 
 
 #endif // MALLOC_H

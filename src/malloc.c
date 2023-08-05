@@ -12,6 +12,6 @@ void* malloc(size_t size) {
         return NULL;
     }
     *(size_t*)ptr = size;
-    ptr += sizeof(size_t);
+    ptr = (size_t*)ptr + 1;
     return ptr;
 }

@@ -10,12 +10,13 @@ LINK_NAME := libft_malloc.so
 TESTER_NAME = tester
 
 # libs config
-LIBFT = -L./src/libft -lft
+# LIBFT = -L./src/libft -lft
+LIBFT = 
 LIBMALLOC = -L. -lft_malloc
 
 # compiler config
 CC = cc
-CFLAGS = -Wall -Wextra -Wpedantic -Wconversion #-Werror
+CFLAGS = -Wall -Wextra -Wpedantic -Wconversion -std=gnu2x #-Werror
 INC_DIR = inc
 
 # archive (library) config
@@ -24,7 +25,7 @@ ARFLAGS = rcs
 
 # symlink config
 LN = ln
-LNFLAGS = -s
+LNFLAGS = -sf
 
 # utils config
 RM = rm -rf
@@ -44,7 +45,7 @@ TEST_SRC = $(shell find $(TEST_DIR) -type f -name "*.c")
 
 # -------------------- public rules ---------------------
 $(NAME): $(OBJ)
-	$(AR) $(ARFLAGS) $@ $(OBJ)
+	$(CC) $(CFLAGS) -shared $(LIBFT) $(OBJ) -o $@
 	$(LN) $(LNFLAGS) $@ $(LINK_NAME)
 
 all: test
@@ -71,4 +72,4 @@ $(ODIR):
 	$(MKDIR) $(patsubst $(SDIR)/%, $(ODIR)/% , $(shell find $(SDIR)/ -type d))
 
 $(ODIR)/%.o: $(SDIR)/%.c | $(ODIR)
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_DIR)
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@ -I $(INC_DIR)
