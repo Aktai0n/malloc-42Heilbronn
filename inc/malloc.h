@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <pthread.h>
 
 
 // typedef union u_alloc {
@@ -17,17 +18,42 @@
 //     char buf[8];
 // } t_alloc;
 
-typedef struct  {
+typedef struct s_alloc {
     union {
-        void* prev;
+        struct s_alloc* prev;
         size_t prev_size;
     };
 
     union {
-        void* next;
+        struct s_alloc* next;
         size_t size;
     };
 } t_alloc;
+
+enum e_memory_page {
+    TINY = 1,
+    SMALL = 2,
+    LARGE = 3
+};
+
+typedef struct s_memory_page {
+    t_alloc* allocated_list;
+    t_alloc* free_list;
+    size_t size;
+    enum e_memory_page type;
+    struct s_memory_page* next;
+} t_memory_page;
+
+struct s_heap {
+    t_memory_page* small_pages;
+    t_memory_page* medium_pages;
+    t_memory_page* large_pages;
+};
+
+// both are defined in malloc.c
+extern struct s_heap g_heap;
+extern pthread_mutex_t g_alloc_mutex;
+
 
 #define IS_ALLOCATED_FLAG ((size_t)0b1)
 #define ALLOC_FLAGS (IS_ALLOCATED_FLAG)
@@ -50,11 +76,16 @@ inline t_alloc* get_next_alloc(const t_alloc* current_node) {
 }
 
 inline t_alloc* get_prev_alloc(const t_alloc* current_node) {
-    
+    (void)current_node;
 }
 
+
 void* malloc(size_t size);
+void* calloc(size_t n, size_t size);
+void* realloc(void* ptr, size_t size);
 void free(void* ptr);
+
+void show_alloc_mem(void);
 
 
 #endif // MALLOC_H
