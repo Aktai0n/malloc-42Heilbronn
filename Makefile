@@ -16,7 +16,7 @@ LIBMALLOC = -L. -lft_malloc
 
 # compiler config
 CC = cc
-CFLAGS = -Wall -Wextra -Wpedantic -Wconversion -std=gnu2x #-Werror
+CFLAGS = -Wall -Wextra -Wpedantic -Wconversion -pthread -std=gnu2x #-Werror
 INC_DIR = inc
 
 # archive (library) config
@@ -44,11 +44,13 @@ TEST_SRC = $(shell find $(TEST_DIR) -type f -name "*.c")
 
 
 # -------------------- public rules ---------------------
+all: test
+
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -shared $(LIBFT) $(OBJ) -o $@
 	$(LN) $(LNFLAGS) $@ $(LINK_NAME)
 
-all: test
+$(LINK_NAME): $(NAME)
 
 clean:
 	$(RM) $(ODIR)
@@ -61,7 +63,16 @@ fclean: clean
 re: fclean all
 
 test: $(NAME)
-	$(CC) $(CFLAGS) -I $(INC_DIR) $(TEST_SRC) $(LIBFT) $(LIBMALLOC) -o $(TESTER_NAME)
+	$(CC) $(CFLAGS) -I $(INC_DIR) $(TEST_SRC) $(LIBFT) -o $(TESTER_NAME)
+
+run_test: test
+	@export DYLD_LIBRARY_PATH=.:$(DYLD_LIBRARY_PATH)
+	@export DYLD_INSERT_LIBRARIES="$(LINK_NAME)"
+	@export DYLD_FORCE_FLAT_NAMESPACE=1
+	@./tester
+
+
+.PHONY: all clean fclean re test run_tests
 
 
 
@@ -73,3 +84,4 @@ $(ODIR):
 
 $(ODIR)/%.o: $(SDIR)/%.c | $(ODIR)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@ -I $(INC_DIR)
+# PIC = Position Independent Code

@@ -4,6 +4,7 @@
 #include "malloc.h"
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 int main(void) {
     char temp[] = "teststring";
@@ -13,6 +14,7 @@ int main(void) {
         perror("malloc");
         return 1;
     }
+    printf("getpagesize = %d\n", getpagesize());
     strcpy(ptr, temp);
     printf("ptr: %s, %p\n", ptr, (void*)ptr);
     free(ptr);
