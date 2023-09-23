@@ -1,5 +1,5 @@
 
-
+#include "defines.h"
 
 #include "malloc.h"
 #include <stdio.h>
@@ -15,6 +15,8 @@ int main(void) {
         return 1;
     }
     printf("getpagesize = %d\n", getpagesize());
+    printf("tiny page = %zu, tiny block = %zu\n", TINY_PAGE_SIZE, TINY_ALLOC_BLOCK_SIZE);
+    printf("small page = %zu, small block = %zu\n", SMALL_PAGE_SIZE, SMALL_ALLOC_BLOCK_SIZE);
     strcpy(ptr, temp);
     printf("ptr: %s, %p\n", ptr, (void*)ptr);
     free(ptr);

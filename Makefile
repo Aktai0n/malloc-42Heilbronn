@@ -63,7 +63,7 @@ fclean: clean
 re: fclean all
 
 test: $(NAME)
-	$(CC) $(CFLAGS) -I $(INC_DIR) $(TEST_SRC) $(LIBFT) -o $(TESTER_NAME)
+	$(CC) $(CFLAGS) -I $(INC_DIR) $(TEST_SRC) $(LIBFT) $(LIBMALLOC) -o $(TESTER_NAME)
 
 run_test: test
 	@export DYLD_LIBRARY_PATH=.:$(DYLD_LIBRARY_PATH)
