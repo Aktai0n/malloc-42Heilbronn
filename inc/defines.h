@@ -16,8 +16,8 @@
 #ifndef FT_MALLOC_ALIGNMENT
 #define FT_MALLOC_ALIGNMENT (2 * sizeof(size_t))
 #else
-#if ((FT_MALLOC_ALIGNMENT % 8) != 0)
-#error "MALLOC_ALIGNMENT malformed!"
+#if ((FT_MALLOC_ALIGNMENT & ~0x8) != 0 || FT_MALLOC_ALIGNMENT < 16)
+#error "FT_MALLOC_ALIGNMENT malformed!"
 #endif
 #endif // FT_MALLOC_ALIGNMENT
 

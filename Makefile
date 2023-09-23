@@ -11,35 +11,38 @@ TESTER_NAME = tester
 
 # libs config
 # LIBFT = -L./src/libft -lft
-LIBFT = 
-LIBMALLOC = -L. -lft_malloc
+LIBFT := 
+LIBMALLOC := -L. -lft_malloc
 
 # compiler config
-CC = cc
-CFLAGS = -Wall -Wextra -Wpedantic -Wconversion -pthread -std=gnu2x #-Werror
-INC_DIR = inc
+CC := cc
+CFLAGS = -std=gnu2x \
+         -Wall -Wextra -Wconversion \
+         -pedantic -Wno-gnu-binary-literal \
+         -pthread #-Werror
+INC_DIR := inc
 
 # archive (library) config
-AR = ar
+AR := ar
 ARFLAGS = rcs
 
 # symlink config
-LN = ln
+LN := ln
 LNFLAGS = -sf
 
 # utils config
-RM = rm -rf
-MKDIR = mkdir -p
+RM := rm -rf
+MKDIR := mkdir -p
 
 # -------------------- dependencies ---------------------
 
-SDIR = src
+SDIR := src
 SRC = $(shell find $(SDIR) -type f -name "*.c")
 
-ODIR = build
+ODIR := build
 OBJ = $(patsubst $(SDIR)/%.c, $(ODIR)/%.o, $(SRC))
 
-TEST_DIR = test
+TEST_DIR := test
 TEST_SRC = $(shell find $(TEST_DIR) -type f -name "*.c")
 
 
