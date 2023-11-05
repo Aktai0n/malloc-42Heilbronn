@@ -7,12 +7,24 @@ static bool can_be_merged_(t_alloc_block* block, t_alloc_block* next) {
 
 bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
     t_alloc_block* next = get_next_block_in_memory(block);
+
     if (!can_be_merged_(block, next)) {
         return false;
     }
-    delete_from_alloc_list(free_list, next);
+
+    if (!delete_from_alloc_list(free_list, next)) {
+        return false;
+    }
+
     // increase the capacity of this block
-    block->size = get_alloc_size(block) + get_alloc_size(next) + sizeof(*next);
+    size_t new_size = get_alloc_size(block) + get_alloc_size(next) + sizeof(*next);
+    set_alloc_size(block, new_size);
+
+    if (is_last_block(next)) {
+        set_alloc_block_flag(block, IS_LAST_BLOCK_FLAG, true);
+    }
+    next->size = 0;
+
     add_to_alloc_list(free_list, block);
     return true;
 }

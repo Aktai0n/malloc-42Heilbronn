@@ -19,7 +19,7 @@ t_alloc_block* split_alloc_block(
 
     // create the new block at the end of the capacity of the current block
     t_alloc_block* new_block = (char*)block + sizeof(*block) + split_size;
-    new_block->size = block_size - sizeof(*block);
+    set_alloc_size(new_block, block_size - sizeof(*block));
     set_alloc_block_flag(new_block, IS_ALLOCATED_FLAG, false);
 
     // transfer the last block flag over if the current block was the last one
@@ -28,7 +28,7 @@ t_alloc_block* split_alloc_block(
         set_alloc_block_flag(new_block, IS_LAST_BLOCK_FLAG, true);
     }
     
-    block->size = split_size;
+    set_alloc_size(block, split_size);
     set_alloc_block_flag(block, IS_LAST_BLOCK_FLAG, false);
     set_alloc_block_flag(block, IS_ALLOCATED_FLAG, true);
 
