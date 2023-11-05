@@ -14,6 +14,7 @@ int main(void) {
         perror("malloc");
         return 1;
     }
+    printf("aligned size = %zu\n", ALIGN_ALLOC_SIZE(16));
     printf("getpagesize = %d\n", getpagesize());
     printf("tiny page = %zu, tiny block = %zu\n", TINY_PAGE_SIZE, TINY_ALLOC_BLOCK_SIZE);
     printf("small page = %zu, small block = %zu\n", SMALL_PAGE_SIZE, SMALL_ALLOC_BLOCK_SIZE);

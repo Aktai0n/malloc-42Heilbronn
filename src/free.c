@@ -9,17 +9,15 @@
 #include <stdlib.h>
 
 #include "ft_malloc.h"
+#include "memory_page/memory_page.h"
 
 void free(void* ptr) {
     if (ptr == NULL) {
         return;
     }
-
-    ptr = (size_t*)ptr - 1;
-    size_t size = *(size_t*)ptr;
-    int result = munmap(ptr, size);
-    if (result == -1) {
-        fprintf(stderr, "mmap failed: %s\n", strerror(errno));
+    
+    if (!destroy_memory_page(ptr)) {
+        fprintf(stderr, "munmap failed: %s\n", strerror(errno));
         exit(1);
     }
 }

@@ -66,16 +66,17 @@ fclean: clean
 re: fclean all
 
 test: $(NAME)
-	$(CC) $(CFLAGS) -I $(INC_DIR) $(TEST_SRC) $(LIBFT) $(LIBMALLOC) -o $(TESTER_NAME)
+	$(CC) $(CFLAGS) -I $(INC_DIR) $(TEST_SRC) $(LIBFT) $(LIBMALLOC) -Wl,-rpath . -o $(TESTER_NAME)
 
-run_test: test
-	@export DYLD_LIBRARY_PATH=.:$(DYLD_LIBRARY_PATH)
-	@export DYLD_INSERT_LIBRARIES="$(LINK_NAME)"
-	@export DYLD_FORCE_FLAT_NAMESPACE=1
-	@./tester
+# TODO: Check on MacOS whether loading the libaries dynamically still works
+# @export DYLD_LIBRARY_PATH=.:$(DYLD_LIBRARY_PATH)
+# @export DYLD_INSERT_LIBRARIES="$(LINK_NAME)"
+# @export DYLD_FORCE_FLAT_NAMESPACE=1
+run: test
+	@./$(TESTER_NAME)
 
 
-.PHONY: all clean fclean re test run_tests
+.PHONY: all clean fclean re test run
 
 
 

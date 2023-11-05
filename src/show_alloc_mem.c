@@ -3,6 +3,7 @@
 
 #include "ft_malloc.h"
 #include "memory_page/memory_page.h"
+#include "alloc_block/alloc_block.h"
 
 void print_memory_page(const t_memory_page* page) {
     if (page->type == TINY_PAGE) {

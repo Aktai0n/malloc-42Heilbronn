@@ -11,8 +11,8 @@
 typedef struct s_memory_page t_memory_page;
 
 struct s_heap {
+    t_memory_page* tiny_pages;
     t_memory_page* small_pages;
-    t_memory_page* medium_pages;
     t_memory_page* large_pages;
 };
 

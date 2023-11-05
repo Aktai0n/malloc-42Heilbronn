@@ -21,6 +21,13 @@
 #endif
 #endif // FT_MALLOC_ALIGNMENT
 
+/// @brief rounds the given size up to a multiple of FT_MALLOC_ALIGNMENT.
+///        If size is 0 the aligned size is also 0
+/// @param size an unsigned integer to be rounded up to the alignment
+/// @return the rounded up size
+#define ALIGN_ALLOC_SIZE(size) (size_t)(((size) + FT_MALLOC_ALIGNMENT - 1) & \
+                                        ~(FT_MALLOC_ALIGNMENT - 1))
+
 inline void align_allocation_size(size_t* size) {
     // allocations of size 0 result in a block of size 16
     if (*size == 0) {

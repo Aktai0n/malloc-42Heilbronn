@@ -24,12 +24,27 @@ inline bool is_allocated(const t_alloc_block* alloc_node) {
     return alloc_node->size & IS_ALLOCATED_FLAG;
 }
 
-inline void set_alloc_flag(t_alloc_block* block, bool flag) {
-    if (flag == true) {
-        block->size = block->size | IS_ALLOCATED_FLAG;
+inline bool is_last_block(const t_alloc_block* block) {
+    return block->size & IS_LAST_BLOCK_FLAG;
+}
+
+/// @brief sets or resets a flag in the specified memory block
+/// @param block the memory block to set the flag in
+/// @param flag the flag that should be modified
+/// @param state the state to which the flag will be set to
+inline void set_alloc_block_flag(t_alloc_block* block, size_t flag, bool state) {
+    if (state == true) {
+        block->size = block->size | flag;
     } else {
-        block->size = block->size & ~IS_ALLOCATED_FLAG;
+        block->size = block->size & ~flag;
     }
+}
+
+inline t_alloc_block* get_next_block_in_memory(t_alloc_block* block) {
+    if (is_last_block(block)) {
+        return NULL;
+    }
+    return (t_alloc_block*)((char*)block + sizeof(*block) + get_alloc_size(block));
 }
 
 inline t_alloc_block* get_next_alloc(const t_alloc_block* current_node) {

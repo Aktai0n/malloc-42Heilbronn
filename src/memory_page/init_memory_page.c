@@ -2,6 +2,7 @@
 #include <stdbool.h>
 
 #include "memory_page.h"
+#include "../alloc_block/alloc_block.h"
 
 /// @brief Constructs a single free memory block whose size is 
 ///        (almost) the entire page
@@ -11,7 +12,8 @@ static void init_free_list_(t_memory_page* page) {
     free_block->next = free_block;
     free_block->prev = free_block;
     free_block->size = page->size - (sizeof(*page) + sizeof(*free_block));
-    set_alloc_flag(free_block, false);
+    set_alloc_block_flag(free_block, IS_ALLOCATED_FLAG, false);
+    set_alloc_block_flag(free_block, IS_LAST_BLOCK_FLAG, true);
     page->free_list = free_block;
 }
 
@@ -29,16 +31,17 @@ t_memory_page* init_memory_page(
     int additional_mmap_flags
 ) {
     t_memory_page* page = call_mmap(
-        size + sizeof(*page),
+        size,
         additional_mmap_flags
     );
     if (page == NULL) {
         return NULL;
     }
     page->type = type;
-    page->size = size;
+    page->size = size - sizeof(*page);
     page->allocated_list = NULL;
     page->next = NULL;
     init_free_list_(page);
     return page;
 }
+
