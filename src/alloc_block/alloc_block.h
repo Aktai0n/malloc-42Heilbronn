@@ -70,3 +70,8 @@ inline t_tiny_block* get_next_tiny_block(const t_tiny_block* block) {
     return (t_tiny_block*)(block->size & ~ALLOC_FLAGS);
 }
 
+
+void add_to_alloc_list(t_alloc_block** list, t_alloc_block* new_block);
+t_alloc_block* delete_from_alloc_list(t_alloc_block** list, t_alloc_block* to_remove);
+// finds a free block of memory to allocate using a best fit approach
+t_alloc_block* find_alloc_block(t_alloc_block* list_head, const size_t size);
