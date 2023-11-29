@@ -51,7 +51,7 @@ inline t_alloc_block* get_next_block_in_memory(t_alloc_block* block) {
     if (is_last_block(block)) {
         return NULL;
     }
-    return (t_alloc_block*)((char*)block + sizeof(*block) + get_alloc_size(block));
+    return (t_alloc_block*)((size_t)block + sizeof(*block) + get_alloc_size(block));
 }
 
 
@@ -63,3 +63,16 @@ t_alloc_block* find_alloc_block(t_alloc_block* list_head, const size_t size);
 
 
 bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list);
+
+t_alloc_block* split_alloc_block(
+    t_alloc_block* block,
+    size_t split_size,
+    t_alloc_block** free_list,
+    t_alloc_block** allocated_list
+);
+
+t_alloc_block* init_alloc_block(
+    const size_t size,
+    t_alloc_block** free_list,
+    t_alloc_block** allocated_list
+);

@@ -15,9 +15,9 @@ void print_memory_page(const t_memory_page* page) {
     }
     printf(": %p\n", (void*)page);
     for (
-        const t_alloc_block* block = page->allocated_list;
+        t_alloc_block* block = page->allocated_list;
         block != NULL;
-        block = get_next_alloc(block)
+        block = get_next_block_in_memory(block)
     ) {
         const size_t start = (size_t)(block) + sizeof(*block); 
         const size_t end = start + block->size;

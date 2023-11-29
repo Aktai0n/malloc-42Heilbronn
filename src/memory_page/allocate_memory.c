@@ -21,19 +21,65 @@ static void add_to_page_list_(t_memory_page** list, t_memory_page* new_page) {
     *list = new_page;
 }
 
+
+static t_memory_page* create_memory_page_(
+    const size_t size,
+    enum e_memory_page type,
+    int additional_mmap_flags,
+    t_memory_page** page_list
+) {
+    t_memory_page* page = init_memory_page(size, type, additional_mmap_flags);
+    if (page == NULL) {
+        return NULL;
+    }
+    add_to_page_list_(page_list, page);
+    return page;
+}
+
+static t_alloc_block* search_alloc_block_(t_memory_page* page, const size_t size) {
+    if (page == NULL) {
+        return NULL;
+    }
+    t_alloc_block* block = init_alloc_block(
+        size,
+        &page->free_list,
+        &page->allocated_list
+    );
+    return block;
+}
+
+static void* allocate_alloc_block_(const size_t size) {
+    t_alloc_block* block = NULL;
+    if (size <= TINY_ALLOC_BLOCK_SIZE) {
+        block = search_alloc_block_(g_heap.tiny_pages, size);
+    } else if (size <= SMALL_ALLOC_BLOCK_SIZE) {
+        block = search_alloc_block_(g_heap.small_pages, size);
+    }
+    return block;
+}
+
 void* allocate_memory(size_t requested_block_size) {
     requested_block_size = ALIGN_ALLOC_SIZE(requested_block_size);
-    // TODO: Look whether there are memory pages with space available
+
+    t_alloc_block* block = allocate_alloc_block_(requested_block_size);
+    if (block != NULL) {
+        return (void*)((size_t)block + sizeof(*block));
+    }
+
     t_memory_page* page = NULL;
     if (requested_block_size <= TINY_ALLOC_BLOCK_SIZE) {
-        page = init_memory_page(TINY_PAGE_SIZE, TINY_PAGE, 0);
-        add_to_page_list_(&g_heap.tiny_pages, page);
+        page = create_memory_page_(TINY_PAGE_SIZE, TINY_PAGE, 0, &g_heap.tiny_pages);
     } else if (requested_block_size <= SMALL_ALLOC_BLOCK_SIZE) {
-        page = init_memory_page(SMALL_PAGE_SIZE, SMALL_PAGE, 0);
-        add_to_page_list_(&g_heap.small_pages, page);
+        page = create_memory_page_(SMALL_PAGE_SIZE, SMALL_PAGE, 0, &g_heap.small_pages);
     } else {
-        page = init_memory_page(requested_block_size, LARGE_PAGE, 0);
-        add_to_page_list_(&g_heap.large_pages, page);
+        page = create_memory_page_(requested_block_size, LARGE_PAGE, 0, &g_heap.large_pages);
     }
-    return page;
+    if (page == NULL) {
+        return NULL;
+    }
+    block = init_alloc_block(requested_block_size, &page->free_list, &page->allocated_list);
+    if (block == NULL) {
+        return NULL;
+    }
+    return (void*)((size_t)block + sizeof(*block));
 }

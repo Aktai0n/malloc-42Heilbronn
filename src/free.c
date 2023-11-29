@@ -15,8 +15,12 @@ void free(void* ptr) {
     if (ptr == NULL) {
         return;
     }
+
+    // any replacement free() is required to preserve errno
+    int save_errno = errno;
     
     if (!destroy_memory_page(ptr)) {
+        errno = save_errno;
         fprintf(stderr, "munmap failed: %s\n", strerror(errno));
         exit(1);
     }

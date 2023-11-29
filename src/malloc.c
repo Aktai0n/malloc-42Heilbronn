@@ -15,5 +15,8 @@ struct s_heap g_heap = { 0 };
 void* malloc(size_t size) {
     size = ALIGN_ALLOC_SIZE(size);
     void* ptr = init_memory_page(size, TINY_PAGE, 0);
-    return (void*)((char*)ptr + sizeof(t_memory_page));
+    if (ptr == NULL) {
+        return NULL;
+    }
+    return (void*)((size_t)ptr + sizeof(t_memory_page));
 }
