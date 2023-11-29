@@ -9,7 +9,6 @@
 #include <stdlib.h>
 
 #include "ft_malloc.h"
-#include "memory_page/memory_page.h"
 
 void free(void* ptr) {
     if (ptr == NULL) {
@@ -19,10 +18,10 @@ void free(void* ptr) {
     // any replacement free() is required to preserve errno
     int save_errno = errno;
     
-    if (!destroy_memory_page(ptr)) {
-        errno = save_errno;
-        fprintf(stderr, "munmap failed: %s\n", strerror(errno));
-        exit(1);
-    }
+    // if (!destroy_memory_page(ptr)) {
+    //     fprintf(stderr, "munmap failed: %s\n", strerror(errno));
+    //     exit(1);
+    // }
+    errno = save_errno;
 }
 
