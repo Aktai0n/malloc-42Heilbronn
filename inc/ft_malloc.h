@@ -35,5 +35,8 @@ void free(void* ptr);
 
 void show_alloc_mem(void);
 
+// BONUS
+void show_alloc_mem_ex(void);
+
 
 #endif // FT_MALLOC_H

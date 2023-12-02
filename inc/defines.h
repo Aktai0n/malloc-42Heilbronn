@@ -4,8 +4,6 @@
 #include <stddef.h>
 #include <unistd.h>
 
-
-
 /*
 ** MALLOC_ALIGNMENT controls the minimal amount of user overhead the 
 ** implementation produces.
