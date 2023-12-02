@@ -3,13 +3,16 @@
 
 #include "ft_malloc.h"
 #include "../src/libft/libft.h"
+#include "test.h"
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
 int main(void) {
-    char temp[] = "teststring";
-    ft_putuint_base(SIZE_MAX, 10);
+    printf_test();
+    // char temp[] = "teststring";
+    // ft_putuint_base_fd(SIZE_MAX, 10, STDIN_FILENO);
+    
     // char* ptr = malloc(sizeof(temp));
     // if (ptr == NULL) {
     //     perror("malloc");

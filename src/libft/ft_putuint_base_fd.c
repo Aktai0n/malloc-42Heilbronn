@@ -33,7 +33,7 @@ static char* number_to_string_(
     return buf + 1;
 }
 
-ssize_t ft_putuint_base(size_t number, uint8_t base) {
+ssize_t ft_putuint_base_fd(size_t number, uint8_t base, int fd) {
     char buf[0x40] = { 0 };
     const char* charset = pick_charset_(base);
     if (charset == NULL) {
@@ -41,5 +41,5 @@ ssize_t ft_putuint_base(size_t number, uint8_t base) {
         return -1;
     }
     number_to_string_(number, base, charset, buf);
-    return write(STDOUT_FILENO, buf, ft_strlen(buf));
+    return write(fd, buf, ft_strlen(buf));
 }
