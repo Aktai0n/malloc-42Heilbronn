@@ -9,7 +9,11 @@
 #include <unistd.h>
 
 int main(void) {
-    printf_test();
+    // printf_test();
+    void* ptr = malloc(16);
+    malloc(20);
+    free(ptr);
+    show_alloc_mem_ex();
     // char temp[] = "teststring";
     // ft_putuint_base_fd(SIZE_MAX, 10, STDIN_FILENO);
     

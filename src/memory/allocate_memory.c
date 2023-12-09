@@ -14,14 +14,6 @@ enum e_memory_page find_page_type(size_t size) {
     }
 }
 
-static void add_to_page_list_(t_memory_page** list, t_memory_page* new_page) {
-    if (*list != NULL) {
-        new_page->next = *list;
-    }
-    *list = new_page;
-}
-
-
 static t_memory_page* create_memory_page_(
     const size_t size,
     enum e_memory_page type,
@@ -32,7 +24,7 @@ static t_memory_page* create_memory_page_(
     if (page == NULL) {
         return NULL;
     }
-    add_to_page_list_(page_list, page);
+    add_to_page_list(page_list, page);
     return page;
 }
 
@@ -48,7 +40,7 @@ static t_alloc_block* search_alloc_block_(t_memory_page* page, const size_t size
     return block;
 }
 
-static void* allocate_alloc_block_(const size_t size) {
+static void* find_existing_alloc_block_(const size_t size) {
     t_alloc_block* block = NULL;
     if (size <= TINY_ALLOC_BLOCK_SIZE) {
         block = search_alloc_block_(g_heap.tiny_pages, size);
@@ -61,7 +53,7 @@ static void* allocate_alloc_block_(const size_t size) {
 void* allocate_memory(size_t requested_block_size) {
     requested_block_size = ALIGN_ALLOC_SIZE(requested_block_size);
 
-    t_alloc_block* block = allocate_alloc_block_(requested_block_size);
+    t_alloc_block* block = find_existing_alloc_block_(requested_block_size);
     if (block != NULL) {
         return (void*)((size_t)block + sizeof(*block));
     }

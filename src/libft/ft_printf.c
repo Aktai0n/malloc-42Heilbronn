@@ -28,6 +28,9 @@ static ssize_t resolve_format_specifiers(
     switch (*format) {
     case '%':
         return write(fd, "%", 1);
+    case 'b':
+        int b = va_arg(args, int);
+        return ft_putbyte_hex((uint8_t)b);
     case 'c':
         int c = va_arg(args, int);
         return write(fd, &c, 1);
@@ -56,7 +59,7 @@ static ssize_t resolve_format_specifiers(
 
 int ft_vdprintf(int fd, const char* format, va_list args) {
     ssize_t ret = 0;
-    char buf[0x10000];
+    char buf[0x100];
     size_t i = 0;
     for (; *format != '\0'; ++format) {
         if (*format == '%') {
@@ -76,6 +79,15 @@ int ft_vdprintf(int fd, const char* format, va_list args) {
         ret += write(fd, buf, i);
     }
     return (int)ret;
+}
+
+int ft_dprintf(int fd, const char* format, ...) {
+    int ret = 0;
+    va_list args;
+    va_start(args, format);
+    ret = ft_vdprintf(fd, format, args);
+    va_end(args);
+    return ret;
 }
 
 int ft_printf(const char* format, ...) {

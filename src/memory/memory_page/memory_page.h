@@ -36,4 +36,8 @@ t_memory_page* init_memory_page(
 
 enum e_memory_page find_page_type(size_t size);
 
-bool destroy_memory_page(void* ptr);
+bool destroy_memory_page(t_memory_page* page);
+
+t_memory_page* find_memory_page(t_alloc_block* block);
+t_memory_page* delete_from_page_list(t_memory_page** list, t_alloc_block* to_remove);
+void add_to_page_list(t_memory_page** list, t_memory_page* new_page);

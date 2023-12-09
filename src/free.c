@@ -9,6 +9,8 @@
 #include <stdlib.h>
 
 #include "ft_malloc.h"
+#include "memory/memory.h"
+#include "libft/libft.h"
 
 void free(void* ptr) {
     if (ptr == NULL) {
@@ -17,6 +19,10 @@ void free(void* ptr) {
 
     // any replacement free() is required to preserve errno
     int save_errno = errno;
+
+    if (!release_memory(ptr)) {
+        ft_dprintf(STDERR_FILENO, "free failed: %s\n", strerror(errno));
+    }
     
     // if (!destroy_memory_page(ptr)) {
     //     fprintf(stderr, "munmap failed: %s\n", strerror(errno));

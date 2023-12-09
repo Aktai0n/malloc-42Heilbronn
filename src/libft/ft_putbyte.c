@@ -12,8 +12,8 @@ static ssize_t ft_putnibble_hex_(uint8_t nibble) {
 }
 
 ssize_t ft_putbyte_hex(uint8_t byte) {
-    char upper_nibble = byte / 16;
-    char lower_nibble = byte % 16;
+    uint8_t upper_nibble = byte / 16;
+    uint8_t lower_nibble = byte % 16;
     ssize_t ret = ft_putnibble_hex_(upper_nibble);
     ret += ft_putnibble_hex_(lower_nibble);
     return ret;
