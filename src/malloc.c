@@ -13,6 +13,9 @@ pthread_mutex_t g_alloc_mutex = PTHREAD_MUTEX_INITIALIZER;
 struct s_heap g_heap = { 0 };
 
 void* malloc(size_t size) {
+    if (size == 0) {
+        return NULL;
+    }
     void* ptr = allocate_memory(size);
     return ptr;
 }
