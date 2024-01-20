@@ -21,7 +21,7 @@ void* call_mmap(size_t size, int additional_flags) {
 }
 
 bool call_munmap(t_memory_page* page) {
-    size_t size = page->size + sizeof(*page);
+    size_t size = page->size;
     if (munmap((void*)page, size) == -1) {
         return false;
     }

@@ -47,6 +47,18 @@ inline void set_alloc_block_flag(t_alloc_block* block, size_t flag, bool state) 
     }
 }
 
+// returns the alloc_block structure associated to
+// a allocated block of memory
+inline t_alloc_block* get_alloc_block(void* ptr) {
+    return (t_alloc_block*)((size_t)ptr - sizeof(t_alloc_block));
+}
+
+// returns the data pointer assoiciated to a block
+// of memory
+inline void* get_alloc_data(t_alloc_block* block) {
+    return (void*)((size_t)block + sizeof(*block));
+}
+
 inline t_alloc_block* get_next_block_in_memory(t_alloc_block* block) {
     if (is_last_block(block)) {
         return NULL;

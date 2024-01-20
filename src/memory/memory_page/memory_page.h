@@ -38,6 +38,16 @@ enum e_memory_page find_page_type(size_t size);
 
 bool destroy_memory_page(t_memory_page* page);
 
+/// @brief Scans the open memory pages for the given block
+/// @param block The block whose associated memory page
+///              should be located
+/// @return The memory page that contains the block
+///         or NULL if no page containing the block is found
 t_memory_page* find_memory_page(t_alloc_block* block);
-t_memory_page* delete_from_page_list(t_memory_page** list, t_alloc_block* to_remove);
+
+/// @brief 
+/// @param list 
+/// @param to_remove 
+/// @return 
+t_memory_page* delete_from_page_list(t_memory_page** list, t_memory_page* to_remove);
 void add_to_page_list(t_memory_page** list, t_memory_page* new_page);

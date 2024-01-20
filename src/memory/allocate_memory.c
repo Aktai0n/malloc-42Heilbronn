@@ -75,3 +75,24 @@ void* allocate_memory(size_t requested_block_size) {
     }
     return (void*)((size_t)block + sizeof(*block));
 }
+
+/// @brief Special implementation for bzero since FT_MALLOC_ALIGNMENT
+///        is guranteed to be a multiple of 8
+static void bzero_calloc_internal_(t_alloc_block* block) {
+    size_t* start = (size_t*)((size_t)block + sizeof(*block));
+    size_t* end = (size_t*)((size_t)start + get_alloc_size(block));
+    while (start < end) {
+        *start = 0;
+        ++start;
+    }
+}
+
+void* allocate_memory_bzero(size_t requested_block_size, bool set_zero) {
+    void* ptr = allocate_memory(requested_block_size);
+    if (!set_zero) {
+        return ptr;
+    }
+    t_alloc_block* block = (t_alloc_block*)((size_t)ptr - sizeof(t_alloc_block));
+    bzero_calloc_internal_(block);
+    return ptr;
+}

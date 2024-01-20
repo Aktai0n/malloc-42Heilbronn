@@ -8,7 +8,7 @@ void add_to_page_list(t_memory_page** list, t_memory_page* new_page) {
     *list = new_page;
 }
 
-t_memory_page* delete_from_page_list(t_memory_page** list, t_alloc_block* to_remove) {
+t_memory_page* delete_from_page_list(t_memory_page** list, t_memory_page* to_remove) {
     t_memory_page* prev = NULL;
     for (t_memory_page* page = *list; page != NULL;) {
         if (page == to_remove) {

@@ -59,4 +59,12 @@ inline void align_allocation_size(size_t* size) {
 #define SMALL_ALLOC_BLOCK_SIZE ((size_t)(SMALL_PAGE_SIZE / 128))
 #endif
 
+#ifdef FT_MALLOC_USE_LOCKS
+#define FT_MALLOC_ACQUIRE_LOCK(mutex) pthread_mutex_lock(mutex)
+#define FT_MALLOC_RELEASE_LOCK(mutex) pthread_mutex_unlock(mutex)
+#else
+#define FT_MALLOC_ACQUIRE_LOCK(mutex) (void)mutex
+#define FT_MALLOC_RELEASE_LOCK(mutex) (void)mutex
+#endif
+
 #endif // DEFINES_H

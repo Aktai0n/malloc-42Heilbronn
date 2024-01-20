@@ -25,7 +25,7 @@ static char* number_to_string_(
     const char* charset,
     char* buf
 ) {
-    uint8_t digit = number % base;
+    uint8_t digit = (uint8_t)(number % base);
     if (number >= base) {
         buf = number_to_string_(number / base, base, charset, buf);
     }
