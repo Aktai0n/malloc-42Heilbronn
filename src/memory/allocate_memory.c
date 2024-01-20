@@ -2,6 +2,7 @@
 #include "ft_malloc.h"
 #include "defines.h"
 #include "memory_page/memory_page.h"
+#include "alloc_block/alloc_block.h"
 
 
 enum e_memory_page find_page_type(size_t size) {
@@ -50,7 +51,8 @@ static void* find_existing_alloc_block_(const size_t size) {
     return block;
 }
 
-void* allocate_memory(size_t requested_block_size) {
+void* allocate_memory(size_t requested_block_size, bool set_zero) {
+    (void)set_zero;
     requested_block_size = ALIGN_ALLOC_SIZE(requested_block_size);
 
     t_alloc_block* block = find_existing_alloc_block_(requested_block_size);
@@ -88,7 +90,7 @@ static void bzero_calloc_internal_(t_alloc_block* block) {
 }
 
 void* allocate_memory_bzero(size_t requested_block_size, bool set_zero) {
-    void* ptr = allocate_memory(requested_block_size);
+    void* ptr = allocate_memory(requested_block_size, false);
     if (!set_zero) {
         return ptr;
     }

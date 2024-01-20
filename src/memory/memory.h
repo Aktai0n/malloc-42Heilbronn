@@ -3,7 +3,14 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-void* allocate_memory(size_t requested_block_size);
+/// @brief Allocates a block of memory with the requested size
+/// @param requested_block_size The size to be allocated
+/// @param set_zero If true all the memory in the block
+///                 is set to zero
+/// @return A pointer to the memory block or
+///         NULL if no block can be found or
+///         created to fit the requested size
+void* allocate_memory(size_t requested_block_size, bool set_zero);
 
 void* reallocate_memory(void* ptr, size_t size);
 

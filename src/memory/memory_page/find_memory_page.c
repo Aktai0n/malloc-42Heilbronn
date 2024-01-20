@@ -1,8 +1,8 @@
 
-
-#include "memory_page.h"
 #include "defines.h"
 #include "ft_malloc.h"
+#include "memory_page.h"
+#include "../alloc_block/alloc_block_struct.h"
 
 t_memory_page* scan_memory_pages_(
     t_memory_page* pages,

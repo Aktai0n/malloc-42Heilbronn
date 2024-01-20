@@ -16,6 +16,6 @@ void* malloc(size_t size) {
     if (size == 0) {
         return NULL;
     }
-    void* ptr = allocate_memory(size);
+    void* ptr = allocate_memory(size, false);
     return ptr;
 }

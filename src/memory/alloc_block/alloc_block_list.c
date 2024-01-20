@@ -1,7 +1,6 @@
 
 #include "alloc_block.h"
 
-
 void add_to_alloc_list(t_alloc_block** list, t_alloc_block* new_block) {
     if (*list != NULL) {
         new_block->next = *list;
