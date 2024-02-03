@@ -1,5 +1,5 @@
 #ifndef COLORS_H
-#define COLORS_h
+#define COLORS_H
 
 
 // all color codes can be found at:

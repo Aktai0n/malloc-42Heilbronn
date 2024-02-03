@@ -25,32 +25,27 @@ static ssize_t resolve_format_specifiers(
     va_list args,
     int fd
 ) {
+    int temp = 0;
     switch (*format) {
     case '%':
         return write(fd, "%", 1);
     case 'b':
-        int b = va_arg(args, int);
-        return ft_putbyte_hex((uint8_t)b);
+        return ft_putbyte_hex((uint8_t)va_arg(args, int));
     case 'c':
-        int c = va_arg(args, int);
-        return write(fd, &c, 1);
+        temp = va_arg(args, int);
+        return write(fd, &temp, 1);
     case 's':
-        char* s = va_arg(args, char*);
-        return print_string_(s, fd);
+        return print_string_(va_arg(args, char*), fd);
     case 'd':
     case 'i':
-        ssize_t i = va_arg(args, int);
-        return ft_putint_base_fd(i, 10, fd);
+        return ft_putint_base_fd(va_arg(args, int), 10, fd);
     case 'u':
-        size_t u = va_arg(args, size_t);
-        return ft_putuint_base_fd(u, 10, fd);
+        return ft_putuint_base_fd(va_arg(args, size_t), 10, fd);
     case 'x':
     case 'X':
-        size_t x = va_arg(args, size_t);
-        return ft_putuint_base_fd(x, 16, fd);
+        return ft_putuint_base_fd(va_arg(args, size_t), 16, fd);
     case 'p':
-        void* p = va_arg(args, void*);
-        return print_addr_(p, fd);
+        return print_addr_(va_arg(args, void*), fd);
     default:
         errno = EINVAL;
         return -1;

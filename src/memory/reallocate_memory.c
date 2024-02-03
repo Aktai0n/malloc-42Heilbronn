@@ -14,8 +14,8 @@ static void memcpy_realloc_internal_(
     size_t old_size = get_alloc_size(old_block);
     size_t new_size = get_alloc_size(new_block);
     size_t min_size = old_size > new_size ? new_size : old_size;
-    size_t* new_ptr = (size_t*)((size_t)new_block + sizeof(*new_block));
-    size_t* old_ptr = (size_t*)((size_t)old_block + sizeof(*old_block));
+    size_t* new_ptr = (size_t*)get_alloc_data(new_block);
+    size_t* old_ptr = (size_t*)get_alloc_data(old_block);
     for (size_t i = 0; i < min_size; i += sizeof(size_t)) {
         new_ptr[i] = old_ptr[i];
     }
@@ -41,6 +41,11 @@ void* reallocate_memory(void* ptr, size_t size) {
 
     size_t block_size = get_alloc_size(block);
     if (block_size >= size) {
+        return ptr;
+    }
+
+    // try to expand the size of the current block
+    if (merge_alloc_block(block, &page->free_list)) {
         return ptr;
     }
 

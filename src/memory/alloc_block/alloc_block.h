@@ -136,11 +136,28 @@ t_alloc_block* init_alloc_block(
     t_alloc_block** allocated_list
 );
 
+// ---------------------- reclaim_alloc_block.c ---------------------
+
+/// @brief Reclaims the block of memory as available by removing it
+///        from the list of allocated blocks and adding it to the
+///        list of free blocks. If possible, the memory is defragmented
+/// @param block The block to be reclaimed
+/// @param free_list A list of free memory blocks
+/// @param allocated_list The list of allocated memory blocks the
+///                       block to be reclaimed is part of
+/// @return True if the block was successfully reclaimed or
+///         false if the block was not part of the allocated list
+bool reclaim_alloc_block(
+    t_alloc_block* block,
+    t_alloc_block** free_list,
+    t_alloc_block** allocated_list
+);
+
 // ---------------------- merge_alloc_block.c ---------------------
 
 /// @brief Defragments memory by merging the given block
 ///        with its next block in memory
-///        if both aren't in use
+///        if the next block is not in use
 /// @param block The block that is checked for merging
 /// @param free_list The free list in which the merged
 ///                  block will be stored

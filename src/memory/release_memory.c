@@ -24,7 +24,7 @@ static bool release_memory_page_(t_memory_page* page, t_alloc_block* block) {
 }
 
 bool release_memory(void* ptr) {
-    t_alloc_block* block = (t_alloc_block*)ptr - 1;
+    t_alloc_block* block = get_alloc_block(ptr);
     t_memory_page* page = find_memory_page(block);
     if (page == NULL) {
         errno = EINVAL;

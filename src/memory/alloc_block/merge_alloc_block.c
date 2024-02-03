@@ -2,7 +2,8 @@
 #include "alloc_block.h"
 
 static bool can_be_merged_(t_alloc_block* block, t_alloc_block* next) {
-    return next != NULL && !is_allocated(block) && !is_allocated(next);
+    // return next != NULL && !is_allocated(block) && !is_allocated(next);
+    return next != NULL && !is_allocated(next);
 }
 
 bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
@@ -25,6 +26,6 @@ bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
     }
     next->size = 0;
 
-    add_to_alloc_list(free_list, block);
+    // add_to_alloc_list(free_list, block);
     return true;
 }
