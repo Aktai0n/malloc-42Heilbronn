@@ -11,10 +11,11 @@
 int main(void) {
     // printf_test();
     void* ptr = malloc(16);
-    malloc(20);
-    // free(ptr);
-    // show_alloc_mem_ex();
-    show_alloc_mem();
+    // malloc(20);
+    // ptr = realloc(ptr, 48);
+    free(ptr);
+    show_alloc_mem_ex();
+    // show_alloc_mem();
     // char temp[] = "teststring";
     // ft_putuint_base_fd(SIZE_MAX, 10, STDIN_FILENO);
     

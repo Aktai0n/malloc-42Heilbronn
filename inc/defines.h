@@ -44,11 +44,13 @@ inline void align_allocation_size(size_t* size) {
 #endif
 
 #ifndef TINY_PAGE_SIZE
-#define TINY_PAGE_SIZE ((size_t)getpagesize() * 16UL)
+// #define TINY_PAGE_SIZE ((size_t)getpagesize() * 16UL)
+#define TINY_PAGE_SIZE ((size_t)getpagesize())
 #endif
 
 #ifndef SMALL_PAGE_SIZE
-#define SMALL_PAGE_SIZE ((size_t)getpagesize() * 128UL)
+// #define SMALL_PAGE_SIZE ((size_t)getpagesize() * 128UL)
+#define SMALL_PAGE_SIZE ((size_t)getpagesize() * 16UL)
 #endif
 
 #ifndef TINY_ALLOC_BLOCK_SIZE

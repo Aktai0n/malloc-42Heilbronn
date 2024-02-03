@@ -45,7 +45,12 @@ void* reallocate_memory(void* ptr, size_t size) {
     }
 
     // try to expand the size of the current block
+    // TODO! refactor merge and split alloc block so they
+    // can be used here!
     if (merge_alloc_block(block, &page->free_list)) {
+        if (is_last_block(block)) {
+            split_alloc_block(block, size, &page->free_list, &page->allocated_list);
+        }
         return ptr;
     }
 
