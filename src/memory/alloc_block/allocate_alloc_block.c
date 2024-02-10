@@ -13,6 +13,8 @@ t_alloc_block* allocate_alloc_block(
         return NULL;
     }
 
+    
+
     // try to split the memory block when its size
     // is bigger than the requested size
     if (get_alloc_size(block) > size) {

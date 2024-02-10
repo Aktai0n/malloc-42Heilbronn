@@ -12,8 +12,8 @@ int main(void) {
     // printf_test();
     void* ptr = malloc(16);
     // malloc(20);
-    // ptr = realloc(ptr, 48);
-    free(ptr);
+    ptr = realloc(ptr, 48);
+    // free(ptr);
     show_alloc_mem_ex();
     // show_alloc_mem();
     // char temp[] = "teststring";

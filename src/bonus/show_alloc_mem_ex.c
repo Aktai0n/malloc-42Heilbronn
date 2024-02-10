@@ -16,6 +16,14 @@ static void print_bytes_(void* ptr, size_t size) {
 }
 
 static void print_alloc_block_(t_alloc_block* block) {
+    const size_t size = get_alloc_size(block);
+    ft_printf("block from %p to %p, size %u, is_allocated: %d, is_last_block: %d\n",
+        block,
+        (void*)((size_t)block + sizeof(*block) + size),
+        size,
+        is_allocated(block),
+        is_last_block(block)
+    );
     ft_putstr(BOLD_PURPLE_COLOR);
     print_bytes_(block, sizeof(*block));
     if (is_allocated(block)) {
@@ -23,7 +31,8 @@ static void print_alloc_block_(t_alloc_block* block) {
     } else {
         ft_putstr(BOLD_GREEN_COLOR);
     }
-    print_bytes_(block + 1, block->size);
+    print_bytes_(get_alloc_data(block), size);
+    ft_printf("%s\n", RESET_COLOR);
 }
 
 static void print_alloc_blocks_(t_alloc_block* blocks) {
@@ -40,6 +49,7 @@ static void print_memory_page_(t_memory_page* page) {
     for (size_t i = 0; i < sizeof(*page); ++i) {
         ft_printf(" %b ", bytes[i]);
     }
+    ft_printf("%s\n", RESET_COLOR);
     if (
         page->allocated_list != NULL &&
         (size_t)page->allocated_list < (size_t)page->free_list
@@ -48,8 +58,7 @@ static void print_memory_page_(t_memory_page* page) {
     } else {
         print_alloc_blocks_(page->free_list);
     }
-    ft_putstr(RESET_COLOR);
-
+    ft_printf("%s\n", RESET_COLOR);
 }
 
 static void print_memory_pages_(t_memory_page* pages) {
@@ -63,4 +72,6 @@ void show_alloc_mem_ex(void) {
     // t_memory_page* pages = g_heap.tiny_pages;
     ft_putstr_color(CYAN_COLOR, "tiny pages:\n");
     print_memory_pages_(g_heap.tiny_pages);
+    print_memory_pages_(g_heap.small_pages);
+    print_memory_pages_(g_heap.large_pages);
 }

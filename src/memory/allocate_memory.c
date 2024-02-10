@@ -4,16 +4,7 @@
 #include "memory_page/memory_page.h"
 #include "alloc_block/alloc_block.h"
 
-
-enum e_memory_page find_page_type(size_t size) {
-    if (size <= TINY_ALLOC_BLOCK_SIZE) {
-        return TINY_PAGE;
-    } else if (size <= SMALL_ALLOC_BLOCK_SIZE) {
-        return SMALL_PAGE;
-    } else {
-        return LARGE_PAGE;
-    }
-}
+static void bzero_calloc_internal_(t_alloc_block* block);
 
 static t_memory_page* create_memory_page_(
     const size_t size,
@@ -29,16 +20,18 @@ static t_memory_page* create_memory_page_(
     return page;
 }
 
-static t_alloc_block* search_alloc_block_(t_memory_page* page, const size_t size) {
-    if (page == NULL) {
-        return NULL;
+static t_alloc_block* search_alloc_block_(t_memory_page* pages, const size_t size) {
+    for (t_memory_page* page = pages; page != NULL; page = page->next) {
+        t_alloc_block* block = allocate_alloc_block(
+            size,
+            &page->free_list,
+            &page->allocated_list
+        );
+        if (block != NULL) {
+            return block;
+        }
     }
-    t_alloc_block* block = allocate_alloc_block(
-        size,
-        &page->free_list,
-        &page->allocated_list
-    );
-    return block;
+    return NULL;
 }
 
 static void* find_existing_alloc_block_(const size_t size) {
@@ -51,31 +44,35 @@ static void* find_existing_alloc_block_(const size_t size) {
     return block;
 }
 
-void* allocate_memory(size_t requested_block_size, bool set_zero) {
-    (void)set_zero;
-    requested_block_size = ALIGN_ALLOC_SIZE(requested_block_size);
+void* allocate_memory(size_t size, bool set_zero) {
+    size = ALIGN_ALLOC_SIZE(size);
 
-    t_alloc_block* block = find_existing_alloc_block_(requested_block_size);
+    t_alloc_block* block = find_existing_alloc_block_(size);
     if (block != NULL) {
-        return (void*)((size_t)block + sizeof(*block));
+        return get_alloc_data(block);
     }
 
     t_memory_page* page = NULL;
-    if (requested_block_size <= TINY_ALLOC_BLOCK_SIZE) {
+    if (size <= TINY_ALLOC_BLOCK_SIZE) {
         page = create_memory_page_(TINY_PAGE_SIZE, TINY_PAGE, 0, &g_heap.tiny_pages);
-    } else if (requested_block_size <= SMALL_ALLOC_BLOCK_SIZE) {
+    } else if (size <= SMALL_ALLOC_BLOCK_SIZE) {
         page = create_memory_page_(SMALL_PAGE_SIZE, SMALL_PAGE, 0, &g_heap.small_pages);
     } else {
-        page = create_memory_page_(requested_block_size, LARGE_PAGE, 0, &g_heap.large_pages);
+        size = ALIGN_ALLOC_SIZE(size + sizeof(*page) + sizeof(*block));
+        page = create_memory_page_(size, LARGE_PAGE, 0, &g_heap.large_pages);
     }
     if (page == NULL) {
         return NULL;
     }
-    block = allocate_alloc_block(requested_block_size, &page->free_list, &page->allocated_list);
+
+    block = allocate_alloc_block(size, &page->free_list, &page->allocated_list);
     if (block == NULL) {
         return NULL;
     }
-    return (void*)((size_t)block + sizeof(*block));
+    if (set_zero) {
+        bzero_calloc_internal_(block);
+    }
+    return get_alloc_data(block);
 }
 
 /// @brief Special implementation for bzero since FT_MALLOC_ALIGNMENT
@@ -87,14 +84,4 @@ static void bzero_calloc_internal_(t_alloc_block* block) {
         *start = 0;
         ++start;
     }
-}
-
-void* allocate_memory_bzero(size_t requested_block_size, bool set_zero) {
-    void* ptr = allocate_memory(requested_block_size, false);
-    if (!set_zero) {
-        return ptr;
-    }
-    t_alloc_block* block = (t_alloc_block*)((size_t)ptr - sizeof(t_alloc_block));
-    bzero_calloc_internal_(block);
-    return ptr;
 }

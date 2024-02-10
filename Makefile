@@ -18,8 +18,8 @@ LIBMALLOC := -L. -lft_malloc
 CC := cc
 CFLAGS = -std=gnu2x \
          -Wall -Wextra -Wconversion \
-         -pedantic -Wno-gnu-binary-literal \
-         -pthread #-Werror
+         -pedantic  \
+         -pthread -Wno-gnu-binary-literal -fsanitize=address #-Werror 
 INC_DIR := inc
 
 # archive (library) config
@@ -74,6 +74,10 @@ test: $(NAME)
 # @export DYLD_FORCE_FLAT_NAMESPACE=1
 run: test
 	@./$(TESTER_NAME)
+
+debug: CFLAGS += -g
+debug: re test
+
 
 
 .PHONY: all clean fclean re test run

@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <pthread.h>
 
+int ft_printf(const char* format, ...);
+
 
 typedef struct s_memory_page t_memory_page;
 

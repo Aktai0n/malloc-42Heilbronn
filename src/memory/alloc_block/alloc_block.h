@@ -24,7 +24,7 @@ inline size_t get_alloc_size(const t_alloc_block* block) {
 /// @param block The block whose size should be changed
 /// @param size The new usable size of the block
 inline void set_alloc_size(t_alloc_block* block, const size_t size) {
-    block->size = size & ~ALLOC_FLAGS;
+    block->size = (block->size & ALLOC_FLAGS) | (size & ~ALLOC_FLAGS);
 }
 
 /// @brief determines whether the block is currently in use or not
@@ -183,6 +183,6 @@ bool merge_alloc_block(
 ///         false if the size of the block was too small
 t_alloc_block* split_alloc_block(
     t_alloc_block* block,
-    size_t split_size,
+    const size_t split_size,
     t_alloc_block** free_list
 );

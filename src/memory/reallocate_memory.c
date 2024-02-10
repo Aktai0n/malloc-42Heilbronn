@@ -27,7 +27,7 @@ static void* reallocate_and_copy_(t_alloc_block* block, size_t new_size) {
         return NULL;
     }
     memcpy_realloc_internal_(new_block, block);
-    return (void*)(new_block + 1);
+    return get_alloc_data(new_block);
 }
 
 void* reallocate_memory(void* ptr, size_t size) {

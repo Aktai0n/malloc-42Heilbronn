@@ -2,6 +2,9 @@
 #include "defines.h"
 #include "alloc_block.h"
 
+static bool can_be_splitted_(const size_t block_size, const size_t split_size) {
+    return block_size >= split_size + FT_MALLOC_ALIGNMENT + sizeof(t_alloc_block);
+}
 
 t_alloc_block* split_alloc_block(
     t_alloc_block* block,
@@ -10,7 +13,7 @@ t_alloc_block* split_alloc_block(
 ) {
     // check whether the block is big enough to be splitted
     const size_t block_size = get_alloc_size(block);
-    if (block_size < split_size + FT_MALLOC_ALIGNMENT + sizeof(*block)) {
+    if (!can_be_splitted_(block_size, split_size)) {
         return NULL;
     }
 

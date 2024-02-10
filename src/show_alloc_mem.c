@@ -7,9 +7,9 @@
 #include "memory/alloc_block/alloc_block.h"
 
 static size_t print_alloc_block_(t_alloc_block* block) {
-    void* start = get_alloc_data(block);
-    void* end = (void*)get_next_block_in_memory(block);
     size_t size = get_alloc_size(block);
+    void* start = get_alloc_data(block);
+    void* end = (void*)((size_t)start + size);
     ft_printf("%p - %p : %u bytes\n", start, end, size);
     return size;
 }
@@ -65,13 +65,14 @@ static t_memory_page* find_next_page_(t_memory_page* prev) {
             next = page;
         }
     }
-    return page;
+    return next;
 }
 
 // needs testing!
 void show_alloc_mem(void) {
     size_t total_alloc_size = 0;
     t_memory_page* page = find_next_page_(NULL);
+    ft_printf("page: %p\n", page);
     while (page != NULL) {
         total_alloc_size += print_memory_page_(page);
         page = find_next_page_(page);

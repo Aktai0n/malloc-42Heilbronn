@@ -8,9 +8,9 @@
 ///        (almost) the entire page
 /// @param page the memory page the block should be added to
 static void init_free_list_(t_memory_page* page) {
-    t_alloc_block* free_block = (t_alloc_block*)(page + 1);
+    t_alloc_block* free_block = (t_alloc_block*)((size_t)page + sizeof(*page));
     free_block->next = NULL;
-    free_block->size = page->size - sizeof(*free_block);
+    free_block->size = page->size - (sizeof(*free_block) + sizeof(*page));
     set_alloc_block_flag(free_block, IS_ALLOCATED_FLAG, false);
     set_alloc_block_flag(free_block, IS_LAST_BLOCK_FLAG, true);
     page->free_list = free_block;
@@ -35,4 +35,3 @@ t_memory_page* init_memory_page(
     init_free_list_(page);
     return page;
 }
-
