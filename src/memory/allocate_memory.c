@@ -69,7 +69,9 @@ void* allocate_memory(size_t size, bool set_zero) {
     if (block == NULL) {
         return NULL;
     }
-    if (set_zero) {
+
+    // large pages are mmaped individually and already zeroed by the kernel
+    if (set_zero && page->type != LARGE_PAGE) {
         bzero_calloc_internal_(block);
     }
     return get_alloc_data(block);

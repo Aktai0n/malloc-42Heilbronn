@@ -1,10 +1,11 @@
 
 #include <stdbool.h>
+#include <errno.h>
 
 #include "memory_page.h"
 #include "ft_malloc.h"
 
-bool destroy_memory_page(t_memory_page* page) {
+bool reclaim_memory_page(t_memory_page* page) {
     t_memory_page** page_list = NULL;
     if (page->type == TINY_PAGE) {
         page_list = &g_heap.tiny_pages;
@@ -13,7 +14,9 @@ bool destroy_memory_page(t_memory_page* page) {
     } else {
         page_list = &g_heap.large_pages;
     }
+
     if (delete_from_page_list(page_list, page) == NULL) {
+        errno = EINVAL;
         return false;
     }
     return call_munmap(page);

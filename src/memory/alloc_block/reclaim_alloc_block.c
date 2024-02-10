@@ -1,4 +1,5 @@
 
+#include <errno.h>
 
 #include "alloc_block.h"
 
@@ -26,6 +27,7 @@ bool reclaim_alloc_block(
 ) {
     // delete the block from the allocated list and add it to the free list
     if (delete_from_alloc_list(allocated_list, block) == NULL) {
+        errno = EINVAL;
         return false;
     }
     set_alloc_block_flag(block, IS_ALLOCATED_FLAG, false);

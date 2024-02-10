@@ -40,7 +40,7 @@ t_memory_page* init_memory_page(
     int additional_mmap_flags
 );
 
-// ---------------------- destroy_memory_page.c ------------------
+// ---------------------- reclaim_memory_page.c ------------------
 
 /// @brief Deletes the memory page from its page list
 ///        and releases the memory
@@ -48,7 +48,7 @@ t_memory_page* init_memory_page(
 /// @return true if the page is sucessfuly deleted or
 ///         false if the page is not found or
 ///         wasn't successfully released
-bool destroy_memory_page(t_memory_page* page);
+bool reclaim_memory_page(t_memory_page* page);
 
 // ---------------------- find_memory_page.c ---------------------
 
