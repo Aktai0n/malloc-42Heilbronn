@@ -1,7 +1,7 @@
 
 #include "alloc_block.h"
 
-static bool can_be_merged_(t_alloc_block* block, t_alloc_block* next) {
+static bool can_be_merged_(t_alloc_block* next) {
     // return next != NULL && !is_allocated(block) && !is_allocated(next);
     return next != NULL && !is_allocated(next);
 }
@@ -9,7 +9,7 @@ static bool can_be_merged_(t_alloc_block* block, t_alloc_block* next) {
 bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
     t_alloc_block* next = get_next_block_in_memory(block);
 
-    if (!can_be_merged_(block, next)) {
+    if (!can_be_merged_(next)) {
         return false;
     }
 
@@ -25,7 +25,5 @@ bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
         set_alloc_block_flag(block, IS_LAST_BLOCK_FLAG, true);
     }
     next->size = 0;
-
-    // add_to_alloc_list(free_list, block);
     return true;
 }

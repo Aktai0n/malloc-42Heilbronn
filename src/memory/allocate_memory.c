@@ -33,7 +33,7 @@ static t_alloc_block* search_alloc_block_(t_memory_page* page, const size_t size
     if (page == NULL) {
         return NULL;
     }
-    t_alloc_block* block = init_alloc_block(
+    t_alloc_block* block = allocate_alloc_block(
         size,
         &page->free_list,
         &page->allocated_list
@@ -71,7 +71,7 @@ void* allocate_memory(size_t requested_block_size, bool set_zero) {
     if (page == NULL) {
         return NULL;
     }
-    block = init_alloc_block(requested_block_size, &page->free_list, &page->allocated_list);
+    block = allocate_alloc_block(requested_block_size, &page->free_list, &page->allocated_list);
     if (block == NULL) {
         return NULL;
     }

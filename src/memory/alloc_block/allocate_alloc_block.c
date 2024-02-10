@@ -3,7 +3,7 @@
 
 #include "alloc_block.h"
 
-t_alloc_block* init_alloc_block(
+t_alloc_block* allocate_alloc_block(
     const size_t size,
     t_alloc_block** free_list,
     t_alloc_block** allocated_list
@@ -19,11 +19,10 @@ t_alloc_block* init_alloc_block(
         t_alloc_block* split_result = split_alloc_block(
             block,
             size,
-            free_list,
-            allocated_list
+            free_list
         );
         if (split_result != NULL) {
-            return split_result;
+            block = split_result;
         }
     }
 

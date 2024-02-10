@@ -114,7 +114,7 @@ t_alloc_block* find_alloc_block(
     const size_t size
 );
 
-// ---------------------- init_alloc_block.c ---------------------
+// ---------------------- allocate_alloc_block.c ---------------------
 
 /// @brief Searches for an available block of memory
 ///        with at least size bytes of capacity
@@ -130,7 +130,7 @@ t_alloc_block* find_alloc_block(
 /// @return The reserved block of memory or
 ///         NULL if no available block was found
 ///         in the free list
-t_alloc_block* init_alloc_block(
+t_alloc_block* allocate_alloc_block(
     const size_t size,
     t_alloc_block** free_list,
     t_alloc_block** allocated_list
@@ -159,8 +159,8 @@ bool reclaim_alloc_block(
 ///        with its next block in memory
 ///        if the next block is not in use
 /// @param block The block that is checked for merging
-/// @param free_list The free list in which the merged
-///                  block will be stored
+/// @param free_list The free list in which the next block
+///                  is stored before the merge
 /// @return True if the merge was performed successfully or
 ///         false if there is no next block or
 ///         the next block is in use
@@ -179,13 +179,10 @@ bool merge_alloc_block(
 ///                   spliting
 /// @param free_list The list in which the newly created
 ///                  block is stored
-/// @param allocated_list The list in which the original block
-///                       with reduced size is stored
 /// @return True if the block could be splitted or
 ///         false if the size of the block was too small
 t_alloc_block* split_alloc_block(
     t_alloc_block* block,
     size_t split_size,
-    t_alloc_block** free_list,
-    t_alloc_block** allocated_list
+    t_alloc_block** free_list
 );
