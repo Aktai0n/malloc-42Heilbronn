@@ -1,4 +1,6 @@
 
+#if 0
+
 #include "defines.h"
 
 #include "ft_malloc.h"
@@ -34,3 +36,22 @@ int main(void) {
     // free(ptr);
     return 0;
 }
+
+#else
+
+#include <stdlib.h>
+
+int      main(void)
+{
+    int   i;
+    char  *addr;
+
+    i = 0; 
+    while (i < 1024) 
+    {
+        i++;
+    } 
+    return (0); 
+}
+
+#endif
