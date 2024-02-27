@@ -32,7 +32,8 @@ bool release_memory(void* ptr) {
         return false;
     }
 
-    if (page->allocated_list == NULL || page->allocated_list->next == NULL) {
+    if (page->next != NULL &&
+        (page->allocated_list == NULL || page->allocated_list->next == NULL)) {
         return reclaim_memory_page(page);
     }
     return reclaim_alloc_block(block, &page->free_list, &page->allocated_list);

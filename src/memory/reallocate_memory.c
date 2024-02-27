@@ -30,6 +30,23 @@ static void* reallocate_and_copy_(t_alloc_block* block, size_t new_size) {
     return get_alloc_data(new_block);
 }
 
+static bool increase_block_size_(t_alloc_block* block, const size_t new_size, t_alloc_block** free_list) {
+    t_alloc_block* next = get_next_block_in_memory(block);
+    if (next == NULL || is_allocated(next)) {
+        return false;
+    }
+    if (new_size > get_alloc_size(block) + get_alloc_size(next) + sizeof(*next)) {
+        return false;
+    }
+    if (!merge_alloc_block(block, free_list)) {
+        return false;
+    }
+    if (is_last_block(block)) {
+        split_alloc_block(block, new_size, free_list);
+    }
+    return true;
+}
+
 void* reallocate_memory(void* ptr, size_t size) {
     size = ALIGN_ALLOC_SIZE(size);
     t_alloc_block* block = get_alloc_block(ptr);
@@ -44,12 +61,15 @@ void* reallocate_memory(void* ptr, size_t size) {
     }
 
     // try to expand the size of the current block
-    if (merge_alloc_block(block, &page->free_list)) {
-        if (is_last_block(block)) {
-            split_alloc_block(block, size, &page->free_list);
-        }
+    if (increase_block_size_(block, size, &page->free_list)) {
         return ptr;
     }
+    // if (merge_alloc_block(block, &page->free_list)) {
+    //     if (is_last_block(block)) {
+    //         split_alloc_block(block, size, &page->free_list);
+    //     }
+    //     return ptr;
+    // }
 
     void* new_block = reallocate_and_copy_(block, size);
     release_memory(ptr);

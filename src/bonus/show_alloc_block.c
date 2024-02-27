@@ -22,7 +22,7 @@ void show_alloc_block(void* ptr) {
     );
     ft_printf("on page %p to %p\n",
         page,
-        (void*)(size_t)page + page->size
+        (void*)((size_t)page + page->size)
     );
     ft_printf("data size: %u, is allocated? %s, is last block on this page? %s\n",
         size,

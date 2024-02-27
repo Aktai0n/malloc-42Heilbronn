@@ -20,7 +20,6 @@ bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
     // increase the capacity of this block
     size_t new_size = get_alloc_size(block) + get_alloc_size(next) + sizeof(*next);
     set_alloc_size(block, new_size);
-            ft_printf("is allocated: %d\n", is_allocated(block));
 
     if (is_last_block(next)) {
         set_alloc_block_flag(block, IS_LAST_BLOCK_FLAG, true);
