@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "ft_malloc.h"
-#include "libft/libft.h"
+#include "libft.h"
 #include "memory/memory_page/memory_page.h"
 #include "memory/alloc_block/alloc_block.h"
 

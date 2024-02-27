@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBFT_H
+#define LIBFT_H
 
 #include <stddef.h>
 #include <sys/types.h>
@@ -17,3 +18,5 @@ ssize_t ft_putint_base_fd(ssize_t number, uint8_t base, int fd);
 
 int ft_printf(const char* format, ...);
 int ft_dprintf(int fd, const char* format, ...);
+
+#endif // LIBFT_H

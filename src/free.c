@@ -10,7 +10,7 @@
 
 #include "ft_malloc.h"
 #include "memory/memory.h"
-#include "libft/libft.h"
+#include "libft.h"
 
 void free(void* ptr) {
     if (ptr == NULL) {

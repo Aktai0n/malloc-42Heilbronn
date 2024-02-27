@@ -2,7 +2,7 @@
 #include "defines.h"
 
 #include "ft_malloc.h"
-#include "../src/libft/libft.h"
+#include "libft.h"
 #include "test.h"
 #include <stdio.h>
 #include <string.h>

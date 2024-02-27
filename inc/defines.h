@@ -26,16 +26,6 @@
 #define ALIGN_ALLOC_SIZE(size) (size_t)(((size) + FT_MALLOC_ALIGNMENT - 1) & \
                                         ~(FT_MALLOC_ALIGNMENT - 1))
 
-inline void align_allocation_size(size_t* size) {
-    // allocations of size 0 result in a block of size 16
-    if (*size == 0) {
-        *size = FT_MALLOC_ALIGNMENT;
-        return;
-    }
-    const size_t remainder = *size % FT_MALLOC_ALIGNMENT;
-    *size += (remainder == 0) ? 0 : (FT_MALLOC_ALIGNMENT - remainder);
-}
-
 /*
 ** Enable FT_MALLOC_USE_LOCKS to make the alloc family of functions thread safe
 */

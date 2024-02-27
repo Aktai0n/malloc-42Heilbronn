@@ -1,7 +1,6 @@
 
 #include "alloc_block.h"
-
-#include "../../libft/libft.h"
+#include "libft.h"
 
 static bool can_be_merged_(t_alloc_block* next) {
     return next != NULL && !is_allocated(next);

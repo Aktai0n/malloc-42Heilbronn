@@ -2,7 +2,7 @@
 #include "defines.h"
 
 #include "ft_malloc.h"
-#include "../src/libft/libft.h"
+#include "libft.h"
 
 
 void printf_test(void) {
