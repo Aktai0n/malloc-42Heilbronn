@@ -19,12 +19,12 @@
 #endif
 #endif // FT_MALLOC_ALIGNMENT
 
-/// @brief rounds the given size up to a multiple of FT_MALLOC_ALIGNMENT.
+/// @brief rounds the given size up to a multiple of alignment.
 ///        If size is 0 the aligned size is also 0
 /// @param size an unsigned integer to be rounded up to the alignment
 /// @return the rounded up size
-#define ALIGN_ALLOC_SIZE(size) (size_t)(((size) + FT_MALLOC_ALIGNMENT - 1) & \
-                                        ~(FT_MALLOC_ALIGNMENT - 1))
+#define ALIGN_ALLOC_SIZE(size, alignment) (size_t)(((size) + (alignment) - 1) & \
+                                        ~((alignment) - 1))
 
 /*
 ** Enable FT_MALLOC_USE_LOCKS to make the alloc family of functions thread safe

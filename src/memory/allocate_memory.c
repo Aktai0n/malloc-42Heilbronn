@@ -45,7 +45,7 @@ static void* find_existing_alloc_block_(const size_t size) {
 }
 
 void* allocate_memory(size_t size, bool set_zero) {
-    size = ALIGN_ALLOC_SIZE(size);
+    size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
 
     t_alloc_block* block = find_existing_alloc_block_(size);
     if (block != NULL) {
@@ -58,7 +58,7 @@ void* allocate_memory(size_t size, bool set_zero) {
     } else if (size <= SMALL_ALLOC_BLOCK_SIZE) {
         page = create_memory_page_(SMALL_PAGE_SIZE, SMALL_PAGE, 0, &g_heap.small_pages);
     } else {
-        size = ALIGN_ALLOC_SIZE(size + sizeof(*page) + sizeof(*block));
+        size = ALIGN_ALLOC_SIZE(size + sizeof(*page) + sizeof(*block), FT_MALLOC_ALIGNMENT);
         page = create_memory_page_(size, LARGE_PAGE, 0, &g_heap.large_pages);
     }
     if (page == NULL) {

@@ -30,7 +30,11 @@ static void* reallocate_and_copy_(t_alloc_block* block, size_t new_size) {
     return get_alloc_data(new_block);
 }
 
-static bool increase_block_size_(t_alloc_block* block, const size_t new_size, t_alloc_block** free_list) {
+static bool increase_block_size_(
+    t_alloc_block* block,
+    const size_t new_size,
+    t_alloc_block** free_list
+) {
     t_alloc_block* next = get_next_block_in_memory(block);
     if (next == NULL || is_allocated(next)) {
         return false;
@@ -48,7 +52,7 @@ static bool increase_block_size_(t_alloc_block* block, const size_t new_size, t_
 }
 
 void* reallocate_memory(void* ptr, size_t size) {
-    size = ALIGN_ALLOC_SIZE(size);
+    size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
     t_alloc_block* block = get_alloc_block(ptr);
     t_memory_page* page = find_memory_page(block);
     if (page == NULL) {
