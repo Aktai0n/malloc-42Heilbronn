@@ -1,11 +1,12 @@
 
-#if 0
+#if 1
 
 #include "defines.h"
 
 #include "ft_malloc.h"
 #include "libft.h"
 #include "test.h"
+#include "colors.h"
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>

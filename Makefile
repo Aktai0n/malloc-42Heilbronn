@@ -12,7 +12,8 @@ TESTER_NAME = tester
 # libs config
 LIBFT_DIR := libs/libft
 LIBFT := -L$(LIBFT_DIR) -lft
-LIBMALLOC := -L. -lft_malloc
+LIBMALLOC_DIR := .
+LIBMALLOC := -L$(LIBMALLOC_DIR) -lft_malloc
 
 # compiler config
 CC := cc
@@ -20,7 +21,11 @@ CFLAGS = -std=gnu2x \
          -Wall -Wextra -Wconversion \
          -pedantic  \
          -pthread -Wno-gnu-binary-literal # -fsanitize=address #-Werror 
-INCLUDES := -Iinc -I$(LIBFT_DIR)/inc
+INCLUDES := -Iinc -I$(LIBFT_DIR)/inc -Isrc/utils/
+
+# linker config
+LDFLAGS = $(LIBMALLOC) $(LIBFT) \
+           -Wl,-rpath,$(LIBMALLOC_DIR)
 
 # archive (library) config
 AR := ar
@@ -50,7 +55,7 @@ TEST_SRC = $(shell find $(TEST_DIR) -type f -name "*.c")
 all: test
 
 $(NAME): $(OBJ) | libs
-	$(CC) $(CFLAGS) $(LIBFT) -shared $(OBJ) -o $@
+	$(CC) -shared $(CFLAGS) $(LIBFT) $(OBJ) -o $@
 	$(LN) $(LNFLAGS) $@ $(LINK_NAME)
 
 $(LINK_NAME): $(NAME)
@@ -67,7 +72,7 @@ fclean: | fclean_libs
 re: fclean all
 
 test: $(NAME)
-	$(CC) $(CFLAGS) $(INCLUDES) $(TEST_SRC) $(LIBFT) $(LIBMALLOC) -Wl,-rpath . -o $(TESTER_NAME)
+	$(CC) $(CFLAGS) $(INCLUDES)  $(TEST_SRC) -o $(TESTER_NAME) $(LDFLAGS)
 
 # TODO: Check on MacOS whether loading the libaries dynamically still works
 # @export DYLD_LIBRARY_PATH=.:$(DYLD_LIBRARY_PATH)
