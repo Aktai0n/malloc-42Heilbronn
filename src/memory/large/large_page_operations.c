@@ -4,14 +4,21 @@
 #include "large_page.h"
 #include "../memory_page/memory_page.h"
 #include "defines.h"
+#include "utils.h"
 
-void ft_malloc_memcpy(void* src, void* dst, size_t size);
+static void init_large_page_end_(t_large_page* page) {
+    t_large_page_end* end = (t_large_page_end*)(
+        (size_t)page + (page->size - sizeof(*end))
+    );
+    end->size = page->size;
+}
 
 t_large_page* create_large_page(
     size_t size,
     int additional_mmap_flags,
     t_large_page** page_list
 ) {
+    size += sizeof(t_large_page) + sizeof(t_large_page_end);
     size = ALIGN_ALLOC_SIZE(size, (size_t)getpagesize());
     t_large_page* page = call_mmap(
         size,
@@ -23,6 +30,7 @@ t_large_page* create_large_page(
     page->next = NULL;
     page->prev = NULL;
     page->size = size;
+    init_large_page_end_(page);
     add_to_large_page_list(page_list, page);
     return page;
 }
