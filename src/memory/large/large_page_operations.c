@@ -7,9 +7,7 @@
 #include "utils.h"
 
 static void init_large_page_end_(t_large_page* page) {
-    t_large_page_end* end = (t_large_page_end*)(
-        (size_t)page + (page->size - sizeof(*end))
-    );
+    t_large_page_end* end = get_large_page_end(page);
     end->size = page->size;
 }
 
@@ -35,7 +33,7 @@ t_large_page* create_large_page(
     return page;
 }
 
-bool destroy_large_page(t_large_page** page_list, t_large_page* page) {
+bool destroy_large_page(t_large_page* page, t_large_page** page_list) {
     if (delete_from_large_page_list(page_list, page) == NULL) {
         return false;
     }
@@ -50,16 +48,20 @@ t_large_page* realloc_large_page(
     const size_t size,
     t_large_page** page_list
 ) {
-    if (page->size >= size) {
+    const size_t page_size = get_large_page_data_size(page);
+    if (page_size >= size) {
         return page;
     }
 
     t_large_page* new_page = create_large_page(size, 0, page_list);
-    if (new_page == NULL) {
-        destroy_large_page(page_list, page);
-        return NULL;
+    if (new_page != NULL) {
+        ft_malloc_memcpy(
+            get_large_page_data(page),
+            get_large_page_data(new_page),
+            page_size
+        );
     }
-    ft_malloc_memcpy(page, new_page, page->size);
-    destroy_large_page(page_list, page);
+    destroy_large_page(page, page_list);
     return new_page;
 }
+

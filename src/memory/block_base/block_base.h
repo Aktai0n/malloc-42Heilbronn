@@ -15,19 +15,19 @@ typedef struct s_block_base {
 ///        masking away the allocation flags
 /// @param block The block whose size is returned
 /// @return The usable size of the block
-inline size_t get_block_size(const t_block_base* block) {
-    return block->size & ~ALLOC_FLAGS;
+inline size_t get_block_size(t_block_base block) {
+    return block.size & ~ALLOC_FLAGS;
 }
 
 /// @brief determines whether the block is currently in use or not
-inline bool is_allocated(const t_block_base* block) {
-    return block->size & IS_ALLOCATED_FLAG;
+inline bool is_allocated(t_block_base block) {
+    return block.size & IS_ALLOCATED_FLAG;
 }
 
 /// @brief determines whether this block is the last in memory
 ///        on the current memory page
-inline bool is_last_block(const t_block_base* block) {
-    return block->size & IS_LAST_BLOCK_FLAG;
+inline bool is_last_block(t_block_base block) {
+    return block.size & IS_LAST_BLOCK_FLAG;
 }
 
 /// @brief Sets or resets a flag in the specified memory block

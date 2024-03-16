@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <stddef.h>
 
 typedef struct s_large_page {

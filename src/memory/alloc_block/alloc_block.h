@@ -54,7 +54,7 @@ inline void set_alloc_block_flag(
     }
 }
 
-/// @brief returns the alloc_block structure associated to
+/// @brief Returns the alloc_block structure associated to
 ///        an allocated block of memory
 /// @param ptr A pointer pointing to the usable memory in
 ///            the alloc_block structure
