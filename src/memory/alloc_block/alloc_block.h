@@ -92,12 +92,12 @@ inline t_alloc_block* get_next_block_in_memory(t_alloc_block* block) {
 /// @param new_block The block to be added to the list
 void add_to_alloc_list(t_alloc_block** list, t_alloc_block* new_block);
 
-/// @brief Removes a memory block form the given list of pages
+/// @brief Removes a memory block form the given list of blocks
 /// @param list The list of memory blocks to be reduced
 /// @param to_remove The memory block that should be removed
 ///                  from the list
 /// @return The removed memory block
-///         or NULL if the page isn't found in the page list
+///         or NULL if the block isn't found in the block list
 t_alloc_block* delete_from_alloc_list(
     t_alloc_block** list,
     t_alloc_block* to_remove

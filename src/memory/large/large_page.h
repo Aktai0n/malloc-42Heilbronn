@@ -43,9 +43,61 @@ inline bool large_page_is_corrupted(t_large_page* page) {
     return get_large_page_end(page)->size != page->size;
 }
 
+// ---------------------- large_page_list.c -----------------------
+
+/// @brief Adds a page of memory to the given list of blocks
+/// @param list The list of pages to be expanded
+/// @param new_page The page to be added to the list
 void add_to_large_page_list(t_large_page** list, t_large_page* new_page);
 
+/// @brief Removes a page of memory form the given list of pages
+/// @param list The list of memory pages to be reduced
+/// @param to_remove The memory page that should be removed
+///                  from the list
+/// @return The removed memory page
+///         or NULL if the page isn't found in the page list
 t_large_page* delete_from_large_page_list(
     t_large_page** list,
     t_large_page* to_remove
+);
+
+// ---------------------- large_page_operations.c -----------------
+
+/// @brief Constructs a new large page of memory to be used for allocations
+/// @param size The usable size of the new page
+/// @param type The type of the new page (determines the size
+///             of the stored blocks)
+/// @param additional_mmap_flags Additional flags passed to mmap.
+///                              MAP_PRIVATE and MAP_ANONYMOUS are
+///                              always enabled
+/// @return the newly created memory page or NULL if mmap fails
+t_large_page* create_large_page(
+    size_t size,
+    int additional_mmap_flags,
+    t_large_page** page_list
+);
+
+/// @brief Deletes the page of memory from its page list
+///        and releases the memory
+/// @param page The page to be deleted
+/// @param page_list The list of memory pages to shrink
+/// @return true if the page is sucessfuly deleted or
+///         false if the page is not found or
+///         wasn't successfully released
+bool destroy_large_page(
+    t_large_page* page,
+    t_large_page** page_list
+);
+
+/// @brief Changes the size of the given page of memory to fit at least
+///        size bytes
+/// @param page The page to be modified
+/// @param size The new size of the memory page
+/// @param page_list The list of memory pages page is inside
+/// @return The memory page that has at least size bytes of capacity
+///         or NULL if the creation of a new page was unsuccessful
+t_large_page* realloc_large_page(
+    t_large_page* page,
+    const size_t size,
+    t_large_page** page_list
 );
