@@ -26,7 +26,7 @@ bool release_memory(void* ptr) {
     if (page == NULL) {
         errno = EINVAL;
         return false;
-    } else if (!is_allocated(block)) {
+    } else if (!is_allocated_block(block)) {
         // double free
         errno = EACCES;
         return false;

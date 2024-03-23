@@ -4,14 +4,36 @@
 #include "defines.h"
 
 #include "ft_malloc.h"
+#include "ft_malloc_internal.h"
 #include "libft.h"
 #include "test.h"
 #include "colors.h"
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
-int main(void) {
+
+
+static void execute_specific_tests_(int argc, char** argv) {
+    struct s_heap heap = {
+        .tiny_pages = NULL,
+        .small_pages = NULL,
+        .large_pages= NULL
+    };
+    for (int i = 1; i < argc; ++i) {
+        const char* str = argv[i];
+        if (strcmp(str, "l") == 0 || strcmp(str, "large") == 0) {
+            test_large_page(heap);
+        }
+    }
+}
+
+int main(int argc, char** argv) {
+    if (argc != 1) {
+        execute_specific_tests_(argc, argv);
+        return 0;
+    }
     // printf_test();
     void* ptr = malloc(16);
     // malloc(20);

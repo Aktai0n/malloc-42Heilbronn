@@ -61,6 +61,16 @@ t_large_page* delete_from_large_page_list(
     t_large_page* to_remove
 );
 
+/// @brief Looks for the memory region that ptr belongs to
+/// @param ptr The pointer to be associated to a page of memory
+/// @param list A list of memory pages in which to look for ptr
+/// @return The memory page containing ptr or
+///         NULL if ptr wasn't found
+t_large_page* find_in_large_page_list(
+    const void* ptr,
+    t_large_page* list
+);
+
 // ---------------------- large_page_operations.c -----------------
 
 /// @brief Constructs a new large page of memory to be used for allocations

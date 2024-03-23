@@ -26,7 +26,7 @@ void show_alloc_block(void* ptr) {
     );
     ft_printf("data size: %u, is allocated? %s, is last block on this page? %s\n",
         size,
-        bool_to_yes_no_(is_allocated(block)),
-        bool_to_yes_no_(is_last_block(block))
+        bool_to_yes_no_(is_allocated_block(block)),
+        bool_to_yes_no_(is_last_alloc_block(block))
     );
 }

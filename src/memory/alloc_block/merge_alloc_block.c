@@ -3,7 +3,7 @@
 #include "libft.h"
 
 static bool can_be_merged_(t_alloc_block* next) {
-    return next != NULL && !is_allocated(next);
+    return next != NULL && !is_allocated_block(next);
 }
 
 bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
@@ -20,7 +20,7 @@ bool merge_alloc_block(t_alloc_block* block, t_alloc_block** free_list) {
     size_t new_size = get_alloc_size(block) + get_alloc_size(next) + sizeof(*next);
     set_alloc_size(block, new_size);
 
-    if (is_last_block(next)) {
+    if (is_last_alloc_block(next)) {
         set_alloc_block_flag(block, IS_LAST_BLOCK_FLAG, true);
     }
     next->size = 0;

@@ -36,7 +36,7 @@ static bool increase_block_size_(
     t_alloc_block** free_list
 ) {
     t_alloc_block* next = get_next_block_in_memory(block);
-    if (next == NULL || is_allocated(next)) {
+    if (next == NULL || is_allocated_block(next)) {
         return false;
     }
     if (new_size > get_alloc_size(block) + get_alloc_size(next) + sizeof(*next)) {
@@ -45,7 +45,7 @@ static bool increase_block_size_(
     if (!merge_alloc_block(block, free_list)) {
         return false;
     }
-    if (is_last_block(block)) {
+    if (is_last_alloc_block(block)) {
         split_alloc_block(block, new_size, free_list);
     }
     return true;
@@ -69,7 +69,7 @@ void* reallocate_memory(void* ptr, size_t size) {
         return ptr;
     }
     // if (merge_alloc_block(block, &page->free_list)) {
-    //     if (is_last_block(block)) {
+    //     if (is_last_alloc_block(block)) {
     //         split_alloc_block(block, size, &page->free_list);
     //     }
     //     return ptr;

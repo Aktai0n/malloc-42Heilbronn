@@ -28,13 +28,13 @@ inline void set_alloc_size(t_alloc_block* block, const size_t size) {
 }
 
 /// @brief determines whether the block is currently in use or not
-inline bool is_allocated(const t_alloc_block* block) {
+inline bool is_allocated_block(const t_alloc_block* block) {
     return block->size & IS_ALLOCATED_FLAG;
 }
 
 /// @brief determines whether this block is the last in memory
 ///        on the current memory page
-inline bool is_last_block(const t_alloc_block* block) {
+inline bool is_last_alloc_block(const t_alloc_block* block) {
     return block->size & IS_LAST_BLOCK_FLAG;
 }
 
@@ -79,7 +79,7 @@ inline void* get_alloc_data(t_alloc_block* block) {
 ///         NULL if the current block is the last block on the
 ///         current memory page
 inline t_alloc_block* get_next_block_in_memory(t_alloc_block* block) {
-    if (is_last_block(block)) {
+    if (is_last_alloc_block(block)) {
         return NULL;
     }
     return (t_alloc_block*)((size_t)block + sizeof(*block) + get_alloc_size(block));

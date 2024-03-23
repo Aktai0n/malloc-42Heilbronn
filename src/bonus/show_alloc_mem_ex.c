@@ -21,12 +21,12 @@ static void print_alloc_block_(t_alloc_block* block) {
         block,
         (void*)((size_t)block + sizeof(*block) + size),
         size,
-        is_allocated(block),
-        is_last_block(block)
+        is_allocated_block(block),
+        is_last_alloc_block(block)
     );
     ft_putstr(BOLD_PURPLE_COLOR);
     print_bytes_(block, sizeof(*block));
-    if (is_allocated(block)) {
+    if (is_allocated_block(block)) {
         ft_putstr(BOLD_RED_COLOR);
     } else {
         ft_putstr(BOLD_GREEN_COLOR);

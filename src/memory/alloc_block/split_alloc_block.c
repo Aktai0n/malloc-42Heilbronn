@@ -26,7 +26,7 @@ t_alloc_block* split_alloc_block(
 
     // transfer the last block flag over if the current block was the last one
     // on this page
-    if (is_last_block(block)) {
+    if (is_last_alloc_block(block)) {
         set_alloc_block_flag(new_block, IS_LAST_BLOCK_FLAG, true);
         set_alloc_block_flag(block, IS_LAST_BLOCK_FLAG, false);
     } else {
