@@ -45,3 +45,11 @@ inline void set_block_flag(
         block->size = block->size & ~flag;
     }
 }
+
+/// @brief sets the size of a block of memory without affecting
+///        the allocation flags
+/// @param block The block whose size should be changed
+/// @param size The new usable size of the block
+inline void set_block_size(t_block_base* block, const size_t size) {
+    block->size = (block->size & ALLOC_FLAGS) | (size & ~ALLOC_FLAGS);
+}

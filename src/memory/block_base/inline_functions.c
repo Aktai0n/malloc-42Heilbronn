@@ -9,3 +9,4 @@ extern inline void set_block_flag(
     size_t flag,
     bool state
 );
+extern inline void set_block_size(t_block_base* block, const size_t size);

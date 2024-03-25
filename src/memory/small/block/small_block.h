@@ -7,6 +7,8 @@ typedef struct s_small_block {
     t_block_base prev;
 } t_small_block;
 
+// ---------------------- inline functions -----------------------
+
 /// @brief returns the small_block structure associated to
 ///        an allocated block of memory
 /// @param ptr A pointer pointing to the usable memory in
@@ -22,7 +24,7 @@ inline t_small_block* get_small_block(void* ptr) {
 ///              be retrieved
 /// @return A pointer to the usable data region
 ///         in the memory block
-inline void* get_alloc_data(t_small_block* block) {
+inline void* get_small_block_data(t_small_block* block) {
     return (void*)((size_t)block + sizeof(*block));
 }
 
@@ -54,3 +56,22 @@ inline t_small_block* get_prev_small_block(t_small_block* block) {
         (size_t)block - (sizeof(*block) + prev_size)
     );
 }
+
+// ---------------------- small_block_list.c -----------------------
+
+/// @brief Finds a free block of memory to allocate
+///        using a first fit approach
+/// @param list The list of blocks to search in
+/// @param size The smallest size the block should have
+/// @return A memory block that has at least size bytes or
+///         NULL if no block is found in the list
+t_small_block* find_small_block(
+    t_small_block* list,
+    const size_t size
+);
+
+
+
+bool merge_small_block(t_small_block** block);
+
+bool split_small_block(t_small_block* block, const size_t split_size);
