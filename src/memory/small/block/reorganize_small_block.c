@@ -10,7 +10,7 @@ static t_small_block* merge_with_next_(
     // increase the capacity of block
     size_t block_size = get_block_size(block->curr);
     size_t next_size = get_block_size(next->curr);
-    size_t new_size = block_size + new_size + sizeof(*next);
+    size_t new_size = block_size + next_size + sizeof(*next);
     set_block_size(&block->curr, new_size);
     
     if (is_last_block(next->curr)) {
@@ -58,7 +58,7 @@ static bool can_be_splitted_(
 
 bool split_small_block(t_small_block* block, const size_t split_size) {
     const size_t block_size = get_block_size(block->curr);
-    if (!can_be_splitted_(block, split_size)) {
+    if (!can_be_splitted_(block_size, split_size)) {
         return false;
     }
 

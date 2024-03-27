@@ -59,11 +59,7 @@ t_small_block* reallocate_small_block(
     if (new_block == NULL) {
         return NULL;
     }
-    ft_malloc_memcpy(
-        get_small_block_data(block),
-        get_small_block_data(new_block),
-        get_block_size(block->curr)
-    );
+    copy_small_block_data(block, new_block);
     deallocate_small_block(&block);
     return new_block;
 }

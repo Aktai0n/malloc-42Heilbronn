@@ -1,11 +1,9 @@
 #pragma once
 
-#include "../../block_base/block_base.h"
+#include <stddef.h>
 
-typedef struct s_small_block {
-    t_block_base curr;
-    t_block_base prev;
-} t_small_block;
+#include "small_block_struct.h"
+#include "utils.h"
 
 // ---------------------- inline functions -----------------------
 
@@ -26,6 +24,17 @@ inline t_small_block* get_small_block(void* ptr) {
 ///         in the memory block
 inline void* get_small_block_data(t_small_block* block) {
     return (void*)((size_t)block + sizeof(*block));
+}
+
+inline void copy_small_block_data(
+    t_small_block* src,
+    t_small_block* dst
+) {
+    ft_malloc_memcpy(
+        get_small_block_data(src),
+        get_small_block_data(dst),
+        get_block_size(src->curr)
+    );
 }
 
 /// @brief Returns the next block in memory on the current memory page
@@ -94,7 +103,6 @@ t_small_block* reallocate_small_block(
     const size_t size,
     t_small_block* list
 );
-
 
 // ---------------------- small_block_list.c -----------------------
 

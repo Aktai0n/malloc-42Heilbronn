@@ -3,7 +3,7 @@
 
 void ft_malloc_bzero(void* start, void* end) {
     size_t* ptr = (size_t*)start;
-    while (ptr < end) {
+    while ((size_t)ptr < (size_t)end) {
         *ptr = 0;
         ++ptr;
     }
