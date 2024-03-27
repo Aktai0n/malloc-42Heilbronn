@@ -57,6 +57,45 @@ inline t_small_block* get_prev_small_block(t_small_block* block) {
     );
 }
 
+// ---------------------- small_block_operations.c ------------------
+
+/// @brief Searches for an available block of memory with at least
+///        `size` bytes of capacity in the given list of blocks
+///        and marks it as in use
+/// @param size The minimal available bytes the block should have
+/// @param list The list of memory blocks on this memory page
+/// @return The reserved block of memory or
+///         NULL if no fitting block was found
+t_small_block* allocate_small_block(
+    const size_t size,
+    t_small_block* list
+);
+
+/// @brief Resets the block of memory as available and defragments
+///        the memory if possible.
+///        If defragmentation is performed, the address of `block`
+///        might change
+/// @param block The memory block to be reclaimed
+void deallocate_small_block(t_small_block** block);
+
+/// @brief Attempts to increase the size of the given
+///        block of memory by:
+///        1. Checking whether it has enough space available.
+///        2. Trying to merge it with its next block in memory
+///        3. Reserving a new block on the current memory page
+///           and copying the contents over
+/// @param block The memory block whose size should be increased
+/// @param size The minimal number of bytes the block should have
+/// @param list The list of memory blocks on this memory page
+/// @return The block of memory with enough available space or
+///         NULL if none of the mentioned steps were successful
+t_small_block* reallocate_small_block(
+    t_small_block* block,
+    const size_t size,
+    t_small_block* list
+);
+
+
 // ---------------------- small_block_list.c -----------------------
 
 /// @brief Finds a free block of memory to allocate
@@ -70,8 +109,25 @@ t_small_block* find_small_block(
     const size_t size
 );
 
+// ---------------------- reorganize_small_block.c -----------------
 
+/// @brief Coalesces the block of memory with its neighbours if they
+///        are not in use
+/// @param block The memory block to merge.
+///              If `merge_backwards` is set to true the address
+///              of the block might change
+/// @param merge_backwards A flag that decides whether `block` should
+///                        be merged with its previous neighbours
+/// @return True if at least one merge was performed and
+///         false if no merge was possible
+bool merge_small_block(t_small_block** block, bool merge_backwards);
 
-bool merge_small_block(t_small_block** block);
-
+/// @brief Splits one block of memory in two at the specified
+///        split point if there is enough space availabe in the block.
+///        The newly created block is marked as availabe
+/// @param block The block that might be splitted
+/// @param split_size The size the block should have after
+///                   spliting
+/// @return True if the block could be splitted or
+///         false if the size of the block was too small
 bool split_small_block(t_small_block* block, const size_t split_size);

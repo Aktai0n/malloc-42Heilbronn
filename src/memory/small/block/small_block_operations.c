@@ -1,5 +1,6 @@
 
 #include "small_block.h"
+#include "utils.h"
 
 static void set_next_block_flag_(
     t_small_block* block,
@@ -28,9 +29,41 @@ t_small_block* allocate_small_block(
     return block;
 }
 
-bool deallocate_small_block(t_small_block* block) {
-    merge_small_block(&block);
-    set_block_flag(&block->curr, IS_ALLOCATED_FLAG, false);
-    set_next_block_flag_(block, IS_ALLOCATED_FLAG, false);
+void deallocate_small_block(t_small_block** block) {
+    merge_small_block(block, true);
+    set_block_flag(&(*block)->curr, IS_ALLOCATED_FLAG, false);
+    set_next_block_flag_(*block, IS_ALLOCATED_FLAG, false);
 }
 
+t_small_block* reallocate_small_block(
+    t_small_block* block,
+    const size_t size,
+    t_small_block* list
+) {
+    if (get_block_size(block->curr) >= size) {
+        return block;
+    }
+
+    // no backward merging allowed because the original ptr
+    // needs to stay valid
+    if (merge_small_block(&block, false)) {
+        if (get_block_size(block->curr) >= size) {
+            if (is_last_block(block->curr)) {
+                split_small_block(block, size);
+            }
+            return block;
+        }
+    }
+
+    t_small_block* new_block = allocate_small_block(size, list);
+    if (new_block == NULL) {
+        return NULL;
+    }
+    ft_malloc_memcpy(
+        get_small_block_data(block),
+        get_small_block_data(new_block),
+        get_block_size(block->curr)
+    );
+    deallocate_small_block(&block);
+    return new_block;
+}
