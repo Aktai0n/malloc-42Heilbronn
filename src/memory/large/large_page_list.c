@@ -1,6 +1,6 @@
 
 #include "large_page.h"
-
+#include "utils.h"
 
 
 void add_to_large_page_list(t_large_page** list, t_large_page* new_page) {
@@ -35,12 +35,8 @@ t_large_page* find_in_large_page_list(
     const void* ptr,
     t_large_page* list
 ) {
-    const size_t ptr_addr = (size_t)ptr;
     while (list != NULL) {
-        const size_t page_addr = (size_t)list;
-        if (page_addr <= ptr_addr &&
-            page_addr + list->size > ptr_addr
-        ) {
+        if (ft_is_in_region(ptr, list, list->size)) {
             return list;
         }
         list = list->next;

@@ -38,7 +38,7 @@ t_small_page* create_small_page(
     return page;
 }
 
-bool destroy_small_page(t_small_page* page, t_small_page* page_list) {
+bool destroy_small_page(t_small_page* page, t_small_page** page_list) {
     if (delete_from_small_page_list(page_list, page) == NULL) {
         return false;
     }

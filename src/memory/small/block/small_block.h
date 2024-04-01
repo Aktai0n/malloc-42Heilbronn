@@ -37,35 +37,6 @@ inline void copy_small_block_data(
     );
 }
 
-/// @brief Returns the next block in memory on the current memory page
-/// @param block A pointer to the current block of memory
-/// @return The next block in memory or
-///         NULL if the current block is the last block on the
-///         current memory page
-inline t_small_block* get_next_small_block(t_small_block* block) {
-    if (is_last_block(block->curr)) {
-        return NULL;
-    }
-    return (t_small_block*)(
-        (size_t)block + sizeof(*block) + get_block_size(block->curr)
-    );
-}
-
-/// @brief Returns the previous block in memory on the current memory page
-/// @param block A pointer to the current block of memory
-/// @return The previous block in memory or
-///         NULL if the current block is the first block on the
-///         current memory page
-inline t_small_block* get_prev_small_block(t_small_block* block) {
-    size_t prev_size = get_block_size(block->prev);
-    if (prev_size == 0) {
-        return NULL;
-    }
-    return (t_small_block*)(
-        (size_t)block - (sizeof(*block) + prev_size)
-    );
-}
-
 // ---------------------- small_block_operations.c ------------------
 
 /// @brief Searches for an available block of memory with at least
@@ -116,6 +87,27 @@ t_small_block* find_small_block(
     t_small_block* list,
     const size_t size
 );
+
+/// @brief Returns the next block in memory on the current memory page
+/// @param block A pointer to the current block of memory
+/// @return The next block in memory or
+///         NULL if the current block is the last block on the
+///         current memory page
+t_small_block* get_next_small_block(t_small_block* block);
+
+/// @brief Returns the previous block in memory on the current memory page
+/// @param block A pointer to the current block of memory
+/// @return The previous block in memory or
+///         NULL if the current block is the first block on the
+///         current memory page
+t_small_block* get_prev_small_block(t_small_block* block);
+
+/// @brief Determines whether overflow has occurred
+///        in a block of memory
+/// @param block The memory block that should be checked
+/// @return True if overflow has occured and
+///         false if not
+bool small_block_is_corrupted(t_small_block* block);
 
 // ---------------------- reorganize_small_block.c -----------------
 

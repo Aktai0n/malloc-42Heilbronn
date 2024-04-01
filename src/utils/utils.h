@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdbool.h>
 
 /// @brief Specialized implementation for bzero which assumes that
 ///        start and end are 8 byte aligned
@@ -15,3 +16,15 @@ void ft_malloc_bzero(void* start, void* end);
 ///            copied into
 /// @param size the number of bytes to be copied
 void ft_malloc_memcpy(void* src, void* dst, size_t size);
+
+/// @brief Validates that the given address is inside the memory region
+/// @param ptr The address to validate
+/// @param region_start The address of the memory regions beginning
+/// @param region_size The size of the memory region
+/// @return True if the address is inside the region or
+///         False if not
+bool ft_is_in_region(
+    const void* ptr,
+    const void* region_start,
+    size_t region_size
+);
