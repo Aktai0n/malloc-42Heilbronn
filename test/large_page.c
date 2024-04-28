@@ -7,7 +7,7 @@
 #include "libft.h"
 #include "colors.h"
 
-const size_t NUM_PAGES = 10;
+#define NUM_PAGES 10
 
 static const char*
 test_large_page_list_(t_large_page** page_list) {
@@ -150,7 +150,6 @@ test_realloc_large_page_(t_large_page** page_list) {
 
 static const char*
 test_destroy_large_page_(t_large_page** page_list) {
-
     t_large_page* page = (*page_list)->next;
     for (size_t i = 3; i < NUM_PAGES; ++i) {
         t_large_page* next = page->next;
@@ -191,14 +190,14 @@ execute_test_(
     ft_putstr("\n");
 }
 
-void test_large_page(struct s_heap heap) {
+void test_large_page(struct s_heap* heap) {
     // t_large_page** pages = &heap.large_pages;
     t_large_page* page = NULL;
     t_large_page** pages = &page;
 
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "Tests for large pages:\n\n");
 
-    execute_test_(test_large_page_list_, "large page list add / delete: ", NULL);
+    execute_test_(test_large_page_list_, "large page list add / remove: ", NULL);
 
     execute_test_(test_create_large_page_, "create large pages: ", pages);
 

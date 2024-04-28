@@ -24,7 +24,9 @@ static void execute_specific_tests_(int argc, char** argv) {
     for (int i = 1; i < argc; ++i) {
         const char* str = argv[i];
         if (strcmp(str, "l") == 0 || strcmp(str, "large") == 0) {
-            test_large_page(heap);
+            test_large_page(&heap);
+        } else if (strcmp(str, "s") == 0 || strcmp(str, "small") == 0) {
+            test_small_page(&heap);
         }
     }
 }
