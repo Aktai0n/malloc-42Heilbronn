@@ -43,16 +43,87 @@ test_small_block_list_(t_small_block** blocks) {
 }
 
 static const char*
+test_split_small_block_(t_small_block** blocks) {
+    t_small_block* block = *blocks;
+    for (size_t i = 0; i < NUM_BLOCKS; ++i) {
+        t_small_block old = *block;
+        const size_t size = ALIGN_ALLOC_SIZE(
+            i % TINY_ALLOC_BLOCK_SIZE,
+            FT_MALLOC_ALIGNMENT
+        );
+        if (!split_small_block(block, size)) {
+            return "Block clould not be splitted";
+        }
+
+        if (get_block_size(block->curr) == get_block_size(old.curr)) {
+            return "Block size not updated";
+        } else if (is_allocated(old.curr) != is_allocated(block->curr)) {
+            return "Allocation flag not transferred";
+        } else if (is_last_block(old.curr) && is_last_block(block->curr)) {
+            return "Last block flag not reset";
+        }
+        t_small_block* next = get_next_small_block(block);
+        if (next == NULL) {
+            return "Next block not properly set";
+        } else if (get_prev_small_block(next) != block) {
+            return "Next->prev block not properly set";
+        } else if (get_block_size(next->curr) == get_block_size(old.curr)) {
+            return "Next block size not properly set";
+        } else if (is_allocated(next->curr)) {
+            return "Next block marked as allocated";
+        } else if (is_last_block(old.curr) != is_last_block(next->curr)) {
+            return "Last block flag in Next block not properly set";
+        }
+        block = next;
+    }
+    return NULL;
+}
+
+static const char*
+test_merge_small_block();
+
+static const char*
+test_allocate_small_block_(t_small_block** blocks) {
+    for (size_t i = 0; i < NUM_BLOCKS; ++i) {
+        const size_t size = i % TINY_ALLOC_BLOCK_SIZE;
+        t_small_block* block = allocate_small_block(size, *blocks);
+        if (block == NULL) {
+            return "Block overhead too big";
+        } else if (get_block_size(block->curr) < size) {
+            return "Block size too small";
+        } else if (!is_allocated(block->curr)) {
+            return "Block not marked as allocated";
+        }
+    }
+    for (t_small_block* block = *blocks; block != NULL;) {
+        t_small_block* next = get_next_small_block(block);
+        t_small_block* prev = get_prev_small_block(block);
+        if (prev != NULL && get_next_small_block(prev) != block) {
+            return "Prev block not properly set";
+        } else if (next != NULL && (!is_allocated(next->prev) ||
+            !get_prev_small_block(next) != block)) {
+            return "Next block not properly set";
+        }
+    }
+    return NULL;
+}
+
+static const char*
 test_get_small_block_data_(t_small_block** blocks) {
     for (t_small_block* block = *blocks; block != NULL;) {
         void* data = get_small_block_data(block);
-        if ()
+        if (!ft_is_in_region(data, block, get_block_size(block->curr))) {
+            return "block data pointer incorrect";
+        } else if (get_small_block(data) != block) {
+            return "block pointer invalid";
+        }
         block = get_next_small_block(block);
     }
-
-
     return NULL;
 }
+
+
+
 
 static void
 execute_test_(
