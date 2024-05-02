@@ -24,8 +24,8 @@
 /// @param size an unsigned integer to be rounded up to the alignment
 /// @param alignment an unsigned integer to be rounded up to
 /// @return the rounded up size
-#define ALIGN_ALLOC_SIZE(size, alignment) (size_t)(((size) + (alignment) - 1) & \
-                                        ~((alignment) - 1))
+#define ALIGN_ALLOC_SIZE(size, alignment) \
+    (size_t)(((size) + (alignment) - 1) & ~((alignment) - 1))
 
 /*
 ** Enable FT_MALLOC_USE_LOCKS to make the alloc family of functions thread safe

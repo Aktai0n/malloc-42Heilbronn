@@ -21,3 +21,13 @@ t_small_block* reallocate_small(
     t_small_block* block_list,
     t_small_page** pages
 );
+
+/// @brief Attempts to find `ptr` in the given list of small pages and
+///        frees it. If it was the last block on the page the whole page
+///        is reclaimed
+/// @param ptr A pointer to a block of memory to be marked as free
+/// @param page_list The list of small memory pages on this heap
+/// @return True if the block is found and successfully marked as free.
+///         False if the block is not found or an error occurs.
+///         In case of error, errno is set to indicate the type of error
+bool deallocate_small(void* ptr, t_small_page** page_list);
