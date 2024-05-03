@@ -6,8 +6,11 @@
 #include "utils.h"
 #include "defines.h"
 
-static bool is_last_page_(const t_small_page* page) {
-    return page->next == NULL;
+static bool is_last_page_(
+    const t_small_page* page,
+    const t_small_page* page_list
+) {
+    return page_list == page && page->next == NULL;
 }
 
 static bool is_last_block_on_page_(
@@ -29,7 +32,9 @@ bool deallocate_small(void* ptr, t_small_page** page_list) {
         return false;
     }
 
-    if (is_last_block_on_page_(block, page) && !is_last_page_(page)) {
+    if (is_last_block_on_page_(block, page) &&
+        !is_last_page_(page, *page_list)
+    ) {
         return destroy_small_page(page, page_list);
     }
     deallocate_small_block(&block);

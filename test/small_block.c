@@ -10,8 +10,6 @@
 
 #define NUM_BLOCKS 50
 
-
-
 static const char*
 test_small_block_list_(t_small_block** blocks) {
     (void)blocks;
@@ -41,6 +39,33 @@ test_small_block_list_(t_small_block** blocks) {
         }
         prev = block;
     }
+    t_small_block* block_list = block_arr;
+    t_small_block* block = find_small_block(block_list, sizeof(t_small_block));
+    if (find_small_block(block_list, 0) == NULL) {
+        return "Size 0 not found in block list";
+    } else if (block == NULL || get_block_size(block->curr) < sizeof(*block)) {
+        return "Block with sizeof t_small_block not found in list";
+    } else if (find_small_block(block_list, TINY_PAGE_SIZE) != NULL) {
+        return "Too big block found in block list";
+    }
+
+    block = get_next_small_block(block_list);
+    const size_t size = get_block_size(block->curr);
+    char* data = get_small_block_data(block);
+    size_t* data_end = (size_t*)(data + size);
+    size_t save_data = *data_end;
+    *((char*)data_end) = 0;
+    if (!small_block_is_corrupted(block)) {
+        return "Off-by-one overflow not recognized";
+    }
+    *data_end = save_data;
+    for (size_t i = 0; i < size * 2; ++i) {
+        data[i] = (char)i;
+    }
+    if (!small_block_is_corrupted(block)) {
+        return "Complete overflow not recognized";
+    }
+
     return NULL;
 }
 
@@ -82,7 +107,7 @@ test_split_small_block_(t_small_block** blocks) {
 }
 
 static const char*
-test_merge_small_block(t_small_block** blocks) {
+test_merge_small_block_(t_small_block** blocks) {
     t_small_block* block = get_next_small_block(*blocks);
     t_small_block* next = get_next_small_block(block);
     if (block == NULL || next == NULL || is_allocated(next->curr)) {
@@ -127,12 +152,15 @@ test_allocate_small_block_(t_small_block** blocks) {
     for (size_t i = 0; i < NUM_BLOCKS; ++i) {
         const size_t size = i % TINY_ALLOC_BLOCK_SIZE;
         t_small_block* block = allocate_small_block(size, *blocks);
+        t_small_block* next = get_next_small_block(block);
         if (block == NULL) {
             return "Block overhead too big";
         } else if (get_block_size(block->curr) < size) {
             return "Block size too small";
         } else if (!is_allocated(block->curr)) {
             return "Block not marked as allocated";
+        } else if (next != NULL && !is_allocated(next->prev)) {
+            return "Is Allocated flag not set in next block";
         }
     }
     for (t_small_block* block = *blocks; block != NULL;) {
@@ -186,9 +214,19 @@ test_deallocate_small_block_(t_small_block** blocks) {
         if (block == NULL) {
             return "Not enough blocks to test with";
         }
-        
-
-        block = get_next_small_block(block);
+        deallocate_small_block(&block);
+        t_small_block* next = get_next_small_block(block);
+        t_small_block* prev = get_prev_small_block(block);
+        if (is_allocated(block->curr)) {
+            return "Is Allocated flag not reset";
+        } else if (next != NULL && !is_allocated(next->curr)) {
+            return "Not merged with next free block";
+        } else if (prev != NULL && !is_allocated(prev->curr)) {
+            return "Not merged with prev free block";
+        } else if (next != NULL && is_allocated(next->prev)) {
+            return "Is Allocated flag not reset in next block";
+        }
+        block = next;
     }
     return NULL;
 }
@@ -239,5 +277,17 @@ void test_small_block(t_small_page* pages) {
 
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "Tests for small blocks:\n\n");
 
+    execute_test_(test_small_block_list_, "small block list functions: ", NULL);
 
+    execute_test_(test_split_small_block_, "split small block: ", blocks);
+
+    execute_test_(test_merge_small_block_, "merge small block: ", blocks);
+
+    execute_test_(test_allocate_small_block_, "allocate small block: ", blocks);
+
+    execute_test_(test_get_small_block_data_, "get small block data: ", blocks);
+
+    execute_test_(test_reallocate_small_block_, "reallocate small block: ", blocks);
+
+    execute_test_(test_deallocate_small_block_, "deallocate small block: ", blocks);
 }
