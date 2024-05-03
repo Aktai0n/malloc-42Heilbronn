@@ -14,6 +14,7 @@ static void init_small_block_list_(t_small_page* page) {
     set_block_flag(&list->curr, IS_ALLOCATED_FLAG, false);
     set_block_flag(&list->curr, IS_LAST_BLOCK_FLAG, true);
     list->prev.size = 0;
+    set_block_flag(&list->prev, IS_LAST_BLOCK_FLAG, true);
     page->block_list = list;
 }
 

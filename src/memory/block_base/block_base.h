@@ -24,11 +24,12 @@ inline bool is_allocated(t_block_base block) {
     return block.size & IS_ALLOCATED_FLAG;
 }
 
-/// @brief determines whether this block is the last in memory
-///        on the current memory page
+/// @brief determines whether this block is the first or last 
+///        in memory on the current memory page
 inline bool is_last_block(t_block_base block) {
     return block.size & IS_LAST_BLOCK_FLAG;
 }
+
 
 /// @brief Sets or resets a flag in the specified memory block
 /// @param block The memory block to set the flag in

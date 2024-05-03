@@ -12,7 +12,7 @@ t_small_block* get_next_small_block(t_small_block* block) {
 
 t_small_block* get_prev_small_block(t_small_block* block) {
     size_t prev_size = get_block_size(block->prev);
-    if (prev_size == 0) {
+    if (is_last_block(block->prev)) {
         return NULL;
     }
     return (t_small_block*)(

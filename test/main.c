@@ -27,6 +27,7 @@ static void execute_specific_tests_(int argc, char** argv) {
             test_large_page(&heap);
         } else if (strcmp(str, "s") == 0 || strcmp(str, "small") == 0) {
             test_small_page(&heap);
+            test_small_block(&heap);
         }
     }
 }

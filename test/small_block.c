@@ -22,6 +22,7 @@ test_small_block_list_(t_small_block** blocks) {
         set_block_flag(curr, IS_ALLOCATED_FLAG, i % 2 == 0);
         set_block_flag(curr, IS_LAST_BLOCK_FLAG, i + 1 == NUM_BLOCKS);
         block->prev = prev_base;
+        set_block_flag(&block->prev, IS_LAST_BLOCK_FLAG, i == 0);
         prev_base = block->curr;
     }
     
@@ -150,7 +151,10 @@ test_merge_small_block_(t_small_block** blocks) {
 static const char*
 test_allocate_small_block_(t_small_block** blocks) {
     for (size_t i = 0; i < NUM_BLOCKS; ++i) {
-        const size_t size = i % TINY_ALLOC_BLOCK_SIZE;
+        const size_t size = ALIGN_ALLOC_SIZE(
+            i % TINY_ALLOC_BLOCK_SIZE,
+            FT_MALLOC_ALIGNMENT
+        );
         t_small_block* block = allocate_small_block(size, *blocks);
         t_small_block* next = get_next_small_block(block);
         if (block == NULL) {
@@ -169,9 +173,10 @@ test_allocate_small_block_(t_small_block** blocks) {
         if (prev != NULL && get_next_small_block(prev) != block) {
             return "Prev block not properly set";
         } else if (next != NULL && (!is_allocated(next->prev) ||
-            !get_prev_small_block(next) != block)) {
+            get_prev_small_block(next) != block)) {
             return "Next block not properly set";
         }
+        block = next;
     }
     return NULL;
 }
@@ -189,8 +194,9 @@ test_reallocate_small_block_(t_small_block** blocks) {
         );
         char* data = get_small_block_data(block);
         size_t size = get_block_size(block->curr);
+        size = size == 0 ? 1 : size;
         const size_t pos = i % size;
-        const char c = (i % 26) + 'A';
+        const char c = (char)(i % 26) + 'A';
         data[0] = c;
         data[pos] = c;
         data[size - 1] = c;
@@ -263,9 +269,10 @@ execute_test_(
     ft_putstr("\n");
 }
 
-void test_small_block(t_small_page* pages) {
-    // t_small_block** blocks = &pages->block_list;
-    t_small_page* page = create_small_page(TINY_PAGE_SIZE, 0, &pages);
+void test_small_block(struct s_heap* heap) {
+    // t_small_block** blocks = &heap->small_pages->block_list;
+    t_small_page* page = NULL;
+    page = create_small_page(TINY_PAGE_SIZE, 0, &page);
     if (page == NULL) {
         ft_putstr_color(
             BOLD_INTENSE_RED_COLOR,

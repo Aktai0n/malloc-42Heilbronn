@@ -71,6 +71,7 @@ fclean: | fclean_libs
 
 re: fclean all
 
+test: CFLAGS += -g
 test: $(NAME)
 	$(CC) $(CFLAGS) $(INCLUDES)  $(TEST_SRC) -o $(TESTER_NAME) $(LDFLAGS)
 
