@@ -188,27 +188,31 @@ test_reallocate_small_block_(t_small_block** blocks) {
         if (block == NULL) {
             return "Not enough blocks to test with";
         }
+        t_small_block* next = get_next_small_block(block);
         const size_t new_size = ALIGN_ALLOC_SIZE(
             (i * 2) % TINY_ALLOC_BLOCK_SIZE,
             FT_MALLOC_ALIGNMENT
         );
         char* data = get_small_block_data(block);
         size_t size = get_block_size(block->curr);
-        size = size == 0 ? 1 : size;
-        const size_t pos = i % size;
-        const char c = (char)(i % 26) + 'A';
-        data[0] = c;
-        data[pos] = c;
-        data[size - 1] = c;
-        if (reallocate_small_block(block, new_size, *blocks) == NULL) {
-            return "Page not suitable for testing";
+        if (size != 0) {
+            const size_t pos = i % size;
+            const char c = (char)(i % 26) + 'A';
+            data[0] = c;
+            data[pos] = c;
+            data[size - 1] = c;
+            block = reallocate_small_block(block, new_size, *blocks);
+            data = get_small_block_data(block);
+            if (block == NULL) {
+                return "Page not suitable for testing";
+            }
+            if (get_block_size(block->curr) < new_size) {
+                return "Size not big enough after realloc";
+            } else if (data[0] != c || data[pos] != c || data[size - 1] != c) {
+                return "Data not properly copied";
+            }
         }
-        if (get_block_size(block->curr) < new_size) {
-            return "Size not big enough after realloc";
-        } else if (data[0] != c || data[pos] != c || data[size - 1] != c) {
-            return "Data not properly copied";
-        }
-        block = get_next_small_block(block);
+        block = next;
     }
     return NULL;
 }
@@ -241,7 +245,9 @@ static const char*
 test_get_small_block_data_(t_small_block** blocks) {
     for (t_small_block* block = *blocks; block != NULL;) {
         void* data = get_small_block_data(block);
-        if (!ft_is_in_region(data, block, get_block_size(block->curr))) {
+        size_t size = get_block_size(block->curr);
+        size = (size == 0 ? 1 : size) + sizeof(*block);
+        if (!ft_is_in_region(data, block, size)) {
             return "block data pointer incorrect";
         } else if (get_small_block(data) != block) {
             return "block pointer invalid";
