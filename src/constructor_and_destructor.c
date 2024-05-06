@@ -1,0 +1,53 @@
+
+#include "ft_malloc_internal.h"
+#include "platform_specific.h"
+#include "memory/small/page/small_page.h"
+#include "memory/medium/page/medium_page.h"
+#include "memory/large/large_page.h"
+#include "defines.h"
+
+#include "libft.h"
+
+REGISTER_CONSTRUCTOR(ft_malloc_constructor);
+REGISTER_DESTRUCTOR(ft_malloc_destructor);
+
+static void ft_malloc_constructor(void) {
+    ft_printf("constructor called\n");
+    t_small_page* small_page = create_small_page(
+        TINY_PAGE_SIZE,
+        0,
+        &g_heap.tiny_pages
+    );
+    if (small_page == NULL) {
+        g_heap.tiny_pages = NULL;
+    }
+    t_medium_page* medium_page = create_medium_page(
+        SMALL_PAGE_SIZE,
+        0,
+        &g_heap.small_pages
+    );
+    if (medium_page == NULL) {
+        g_heap.small_pages = NULL;
+    }
+    g_heap.large_pages = NULL;
+}
+
+static void ft_malloc_destructor(void) {
+    // TODO: Check if pages are still in use
+    // for (t_small_page* page = g_heap.tiny_pages; page != NULL;) {
+    //     t_small_page* next = page->next;
+    //     destroy_small_page(page, &g_heap.tiny_pages);
+    //     page = next;
+    // }
+    // for (t_medium_page* page = g_heap.small_pages; page != NULL;) {
+    //     t_medium_page* next = page->next;
+    //     destroy_medium_page(page, &g_heap.small_pages);
+    //     page = next;
+    // }
+    // for (t_large_page* page = g_heap.large_pages; page != NULL;) {
+    //     t_large_page* next = page->next;
+    //     destroy_large_page(page, &g_heap.large_pages);
+    //     page = next;
+    // }
+    ft_printf("destructor called\n");
+}

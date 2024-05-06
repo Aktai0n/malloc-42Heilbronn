@@ -1,6 +1,7 @@
 #pragma once
 
 #include <pthread.h>
+#include "platform_specific.h"
 
 typedef struct s_memory_page t_memory_page;
 
