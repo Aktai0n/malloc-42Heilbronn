@@ -13,13 +13,15 @@ static const char*
 test_medium_page_list_(t_medium_page** pages) {
     (void)pages;
     t_medium_page page1 = {
-        .block_list = NULL,
+        .allocated_list = NULL,
+        .free_list = NULL,
         .next = NULL,
         .prev = NULL,
         .size = 100
     };
     t_medium_page page2 = {
-        .block_list = NULL,
+        .allocated_list = NULL,
+        .free_list = NULL,
         .next = NULL,
         .prev = NULL,
         .size = 200
@@ -63,11 +65,19 @@ test_create_medium_page_(t_medium_page** pages) {
     return NULL;
 }
 
+static t_medium_block*
+find_lowest_addr_block_(t_medium_page* page) {
+    return (page->allocated_list != NULL &&
+        (size_t)page->allocated_list < (size_t)page->free_list) ?
+        page->allocated_list :
+        page->free_list;
+}
+
 static const char*
 test_find_in_medium_page_list_(t_medium_page** pages) {
     t_medium_page* page_list = *pages;
-    t_medium_block* block = page_list->block_list;
     t_medium_page* page = page_list;
+    t_medium_block* block = find_lowest_addr_block_(page);
 
     if (find_in_medium_page_list((void*)block, page_list) != page) {
         return "pointer to first page not found";
@@ -75,12 +85,12 @@ test_find_in_medium_page_list_(t_medium_page** pages) {
     for (size_t i = 0; i < NUM_PAGES / 2; ++i) {
         page = page->next;
     }
-    block = page->block_list;
+    block = find_lowest_addr_block_(page);
     if (find_in_medium_page_list((void*)block, page_list) != page) {
         return "pointer to middle page not found";
     }
     for (; page->next != NULL; page = page->next);
-    block = page->block_list;
+    block = find_lowest_addr_block_(page);
     if (find_in_medium_page_list((void*)block, page_list) != page) {
         return "pointer to last page not found";
     }

@@ -17,7 +17,7 @@ static void init_medium_block_list_(t_medium_page* page) {
     set_block_flag(&list->prev, IS_LAST_BLOCK_FLAG, true);
     list->next_ptr = NULL;
     list->prev_ptr = NULL;
-    page->block_list = list;
+    page->free_list = list;
 }
 
 t_medium_page* create_medium_page(
@@ -35,6 +35,7 @@ t_medium_page* create_medium_page(
     }
     page->next = NULL;
     page->prev = NULL;
+    page->allocated_list = NULL;
     page->size = size;
     init_medium_block_list_(page);
     add_to_medium_page_list(page_list, page);
