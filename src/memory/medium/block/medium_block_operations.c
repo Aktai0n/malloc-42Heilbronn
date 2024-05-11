@@ -34,16 +34,16 @@ t_medium_block* allocate_medium_block(
 }
 
 bool deallocate_medium_block(
-    t_medium_block* block,
+    t_medium_block** block,
     t_medium_block** free_list,
     t_medium_block** allocated_list
 ) {
-    if (delete_from_medium_block_list(allocated_list, block) == NULL) {
+    if (delete_from_medium_block_list(allocated_list, *block) == NULL) {
         return false;
     }
-    set_block_flag(&block->curr, IS_ALLOCATED_FLAG, false);
-    set_next_block_flag_(block, IS_ALLOCATED_FLAG, false);
-    add_to_medium_block_list(free_list, block);
+    set_block_flag(&(*block)->curr, IS_ALLOCATED_FLAG, false);
+    set_next_block_flag_(*block, IS_ALLOCATED_FLAG, false);
+    add_to_medium_block_list(free_list, *block);
 
     // TODO: Merge blocks
     return true;

@@ -44,3 +44,22 @@ inline void copy_medium_block_data(
         get_block_size(src->curr)
     );
 }
+
+t_medium_block* allocate_medium_block(
+    const size_t size,
+    t_medium_block** free_list,
+    t_medium_block** allocated_list
+);
+
+bool deallocate_medium_block(
+    t_medium_block* block,
+    t_medium_block** free_list,
+    t_medium_block** allocated_list
+);
+
+t_medium_block* reallocate_medium_block(
+    t_medium_block* block,
+    const size_t size,
+    t_medium_block** free_list,
+    t_medium_block** allocated_list
+);
