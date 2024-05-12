@@ -91,7 +91,7 @@ bool deallocate_medium(
         return destroy_medium_page(page, pages);
     }
     return deallocate_medium_block(
-        block,
+        &block,
         &page->free_list,
         &page->allocated_list
     );

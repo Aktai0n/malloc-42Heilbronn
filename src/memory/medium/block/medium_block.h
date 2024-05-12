@@ -61,7 +61,7 @@ t_medium_block* allocate_medium_block(
 );
 
 bool deallocate_medium_block(
-    t_medium_block* block,
+    t_medium_block** block,
     t_medium_block** free_list,
     t_medium_block** allocated_list
 );

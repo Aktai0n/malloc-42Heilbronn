@@ -4,8 +4,8 @@
 
 #include "ft_malloc.h"
 #include "defines.h"
-#include "medium/medium.h"
 #include "small/small.h"
+#include "medium/medium.h"
 #include "medium/block/medium_block.h"
 #include "small/block/small_block.h"
 
