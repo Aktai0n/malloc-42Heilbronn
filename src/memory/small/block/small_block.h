@@ -26,6 +26,20 @@ inline void* get_small_block_data(t_small_block* block) {
     return (void*)((size_t)block + sizeof(*block));
 }
 
+/// @brief Returns a pointer pointing to the address just behind
+///        the last data byte in the given block. 
+///        Essentially returning an `end iterator`
+/// @param block The block whose end should be calculated
+/// @return A pointer pointing behind the data region in the
+///         memory block
+/// @attention Dereferencing this pointer is undefined behaviour
+inline void* get_small_block_data_end(t_small_block* block) {
+    return (void*)(
+        (size_t)get_small_block_data(block) +
+        get_block_size(block->curr)
+    );
+}
+
 inline void copy_small_block_data(
     t_small_block* src,
     t_small_block* dst

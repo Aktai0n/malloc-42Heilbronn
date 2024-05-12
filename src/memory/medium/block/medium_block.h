@@ -26,13 +26,22 @@ t_medium_block* delete_from_medium_block_list(
 
 bool medium_block_is_corrupted(t_medium_block* block);
 
-inline void* get_medium_block_data(t_medium_block* block) {
-    return (void*)((size_t)block + sizeof(*block));
-}
 
 inline t_medium_block* get_medium_block(void* ptr) {
     return (t_medium_block*)((size_t)ptr - sizeof(t_medium_block));
 }
+
+inline void* get_medium_block_data(t_medium_block* block) {
+    return (void*)((size_t)block + sizeof(*block));
+}
+
+inline void* get_medium_block_data_end(t_medium_block* block) {
+    return (void*)(
+        (size_t)get_medium_block_data(block) +
+        get_block_size(block->curr)
+    );
+}
+
 
 inline void copy_medium_block_data(
     t_medium_block* src,

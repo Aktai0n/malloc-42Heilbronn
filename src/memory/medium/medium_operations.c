@@ -6,7 +6,11 @@
 #include "page/medium_page.h"
 #include "defines.h"
 
-t_medium_block* allocate_medium(const size_t size, t_medium_page** pages) {
+t_medium_block* allocate_medium(
+    const size_t size,
+    const bool set_zero,
+    t_medium_page** pages
+) {
     for (t_medium_page* page = *pages; page != NULL; page = page->next) {
         t_medium_block* block = allocate_medium_block(
             size,
@@ -14,6 +18,12 @@ t_medium_block* allocate_medium(const size_t size, t_medium_page** pages) {
             &page->allocated_list
         );
         if (block != NULL) {
+            if (set_zero) {
+                ft_malloc_bzero(
+                    get_medium_block_data(block),
+                    get_medium_block_data_end(block)
+                );
+            }
             return block;
         }
     }
@@ -40,7 +50,7 @@ t_medium_block* reallocate_medium(
         return new_block;
     }
 
-    new_block = allocate_medium(size, pages);
+    new_block = allocate_medium(size, false, pages);
     if (new_block != NULL) {
         copy_medium_block_data(block, new_block);
         deallocate_medium(block, page, pages);
@@ -71,6 +81,7 @@ bool deallocate_medium(
     t_medium_page** pages
 ) {
     if (!is_allocated(block->curr)) {
+        // double free
         errno = EACCES;
         return false;
     }
