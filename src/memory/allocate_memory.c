@@ -8,6 +8,8 @@
 #include "medium/medium.h"
 #include "medium/block/medium_block.h"
 #include "small/block/small_block.h"
+#include "large/large.h"
+#include "large/page/large_page.h"
 
 void* allocate_memory(size_t size, bool set_zero) {
     size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
@@ -32,7 +34,11 @@ void* allocate_memory(size_t size, bool set_zero) {
         }
         return get_medium_block_data(block);
     } else {
-        // TODO: allocate large page
+        t_large_page* page = allocate_large(size, &g_heap.large_pages);
+        if (page == NULL) {
+            return NULL;
+        }
+        return get_large_page_data(page);
     }
 }
 

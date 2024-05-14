@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /*
 ** MALLOC_ALIGNMENT controls the minimal amount of user overhead the 
@@ -15,7 +16,7 @@
 #ifndef FT_MALLOC_ALIGNMENT
 #define FT_MALLOC_ALIGNMENT (2 * sizeof(size_t))
 #else
-#if ((FT_MALLOC_ALIGNMENT & ~0x8) != 0 || FT_MALLOC_ALIGNMENT < 16)
+#if ((FT_MALLOC_ALIGNMENT % 0x8) != 0 || FT_MALLOC_ALIGNMENT < 16)
 #error "FT_MALLOC_ALIGNMENT malformed!"
 #endif
 #endif // FT_MALLOC_ALIGNMENT

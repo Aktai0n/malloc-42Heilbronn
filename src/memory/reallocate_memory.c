@@ -11,6 +11,8 @@
 #include "medium/medium.h"
 #include "medium/block/medium_block.h"
 #include "medium/page/medium_page.h"
+#include "large/large.h"
+#include "large/page/large_page.h"
 
 static void* realloc_small_(
     void* old_data,
@@ -18,6 +20,7 @@ static void* realloc_small_(
     t_small_page* page,
     struct s_heap* heap
 ) {
+    void* new_data = NULL;
     t_small_block* old_block = get_small_block(old_data);
     size_t old_size = get_block_size(old_block->curr);
     if (size <= TINY_ALLOC_BLOCK_SIZE) {
@@ -37,15 +40,20 @@ static void* realloc_small_(
             &heap->small_pages
         );
         if (new_block != NULL) {
-            void* new_data = get_medium_block_data(new_block);
-            ft_malloc_memcpy(old_data, new_data, old_size);
-            deallocate_small(old_block, page, &heap->tiny_pages);
-            return new_data;
+            new_data = get_medium_block_data(new_block);
         }
     } else {
-        // TODO: Implement large realloc
+        t_large_page* new_page = allocate_large(size, &g_heap.large_pages);
+        if (new_page != NULL) {
+            new_data = get_large_page_data(new_page);
+        }
     }
-    return NULL;
+
+    if (new_data != NULL) {
+        ft_malloc_memcpy(old_data, new_data, old_size);
+        deallocate_small(old_block, page, &heap->tiny_pages);
+    }
+    return new_data;
 }
 
 static void* realloc_medium_(
@@ -54,6 +62,7 @@ static void* realloc_medium_(
     t_medium_page* page,
     struct s_heap* heap
 ) {
+    void* new_data = NULL;
     t_medium_block* old_block = get_medium_block(old_data);
     size_t old_size = get_block_size(old_block->curr);
     if (size <= SMALL_ALLOC_BLOCK_SIZE) {
@@ -67,13 +76,22 @@ static void* realloc_medium_(
             return get_medium_block_data(new_block);
         }
     } else {
-        // TODO: Implement large realloc
+        t_large_page* new_page = allocate_large(size, &g_heap.large_pages);
+        if (new_page != NULL) {
+            new_data = get_large_page_data(new_page);
+        }
     }
-    return NULL;
+
+    if (new_data != NULL) {
+        ft_malloc_memcpy(old_data, new_data, old_size);
+        deallocate_medium(old_block, page, &heap->small_pages);
+    }
+    return new_data;
 }
 
 void* reallocate_memory(void* ptr, size_t size) {
-    if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT)) {
+    if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
+        !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
         errno = EINVAL;
         return NULL;
     }

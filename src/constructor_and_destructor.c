@@ -3,7 +3,7 @@
 #include "platform_specific.h"
 #include "memory/small/page/small_page.h"
 #include "memory/medium/page/medium_page.h"
-#include "memory/large/large_page.h"
+#include "memory/large/page/large_page.h"
 #include "defines.h"
 
 #include "libft.h"
