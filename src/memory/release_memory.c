@@ -19,7 +19,7 @@
 bool release_memory(void* ptr) {
     if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
         !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
-        errno = EINVAL;
+        errno = EFAULT;
         return false;
     }
     t_small_page* small_page = find_in_small_page_list(ptr, g_heap.tiny_pages);

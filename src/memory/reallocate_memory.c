@@ -50,7 +50,8 @@ static void* realloc_small_(
     }
 
     if (new_data != NULL) {
-        ft_malloc_memcpy(old_data, new_data, old_size);
+        size = size < old_size ? size : old_size;
+        ft_malloc_memcpy(old_data, new_data, size);
         deallocate_small(old_block, page, &heap->tiny_pages);
     }
     return new_data;
@@ -83,8 +84,54 @@ static void* realloc_medium_(
     }
 
     if (new_data != NULL) {
-        ft_malloc_memcpy(old_data, new_data, old_size);
+        size = size < old_size ? size : old_size;
+        ft_malloc_memcpy(old_data, new_data, size);
         deallocate_medium(old_block, page, &heap->small_pages);
+    }
+    return new_data;
+}
+
+static void* realloc_large_(
+    void* old_data,
+    size_t size,
+    t_large_page* page,
+    struct s_heap* heap
+) {
+    void* new_data = NULL;
+    size_t old_size = get_large_page_data_size(page);
+    if (size <= TINY_ALLOC_BLOCK_SIZE) {
+        t_small_block* new_block = allocate_small(
+            size,
+            false,
+            &heap->tiny_pages
+        );
+        if (new_block != NULL) {
+            new_data = get_small_block_data(new_block);
+        }
+    } else if (size <= SMALL_ALLOC_BLOCK_SIZE) {
+        t_medium_block* new_block = allocate_medium(
+            size,
+            false,
+            &heap->small_pages
+        );
+        if (new_block != NULL) {
+            new_data = get_medium_block_data(new_block);
+        }
+    } else {
+        t_large_page* new_page = reallocate_large(
+            page,
+            size,
+            &heap->large_pages
+        );
+        if (new_page != NULL) {
+            return get_large_page_data(new_page);
+        }
+    }
+
+    if (new_data != NULL) {
+        size = size < old_size ? size : old_size;
+        ft_malloc_memcpy(new_data, old_data, size);
+        deallocate_large(page, &heap->large_pages);
     }
     return new_data;
 }
@@ -92,7 +139,7 @@ static void* realloc_medium_(
 void* reallocate_memory(void* ptr, size_t size) {
     if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
         !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
-        errno = EINVAL;
+        errno = EFAULT;
         return NULL;
     }
     size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
@@ -104,7 +151,10 @@ void* reallocate_memory(void* ptr, size_t size) {
     if (medium_page != NULL) {
         return realloc_medium_(ptr, size, medium_page, &g_heap);
     }
-    // TODO: Implement large page
+    t_large_page* large_page = find_in_large_page_list(ptr, g_heap.large_pages);
+    if (large_page != NULL) {
+        return realloc_large_(ptr, size, large_page, &g_heap);
+    }
     errno = EINVAL;
     return NULL;
 }
