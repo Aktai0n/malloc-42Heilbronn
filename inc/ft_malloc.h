@@ -9,7 +9,7 @@
 #include "ft_malloc_internal.h"
 
 
-int ft_printf(const char* format, ...);
+// int ft_printf(const char* format, ...);
 
 
 

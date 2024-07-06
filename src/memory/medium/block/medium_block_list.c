@@ -6,7 +6,7 @@ t_medium_block* get_next_medium_block(t_medium_block* block) {
         return NULL;
     }
     return (t_medium_block*)(
-        (size_t)block + sizeof(*block) * get_block_size(block->curr)
+        (uintptr_t)block + sizeof(*block) + get_block_size(block->curr)
     );
 }
 
@@ -15,7 +15,7 @@ t_medium_block* get_prev_medium_block(t_medium_block* block) {
         return NULL;
     }
     return (t_medium_block*)(
-        (size_t)block - (sizeof(*block) + get_block_size(block->prev))
+        (uintptr_t)block - (sizeof(*block) + get_block_size(block->prev))
     );
 }
 

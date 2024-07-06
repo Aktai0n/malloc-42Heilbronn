@@ -22,7 +22,7 @@ t_medium_block* allocate_medium_block(
         return NULL;
     }
 
-    // TODO: Split block
+    split_medium_block(block, size, free_list);
 
     if (delete_from_medium_block_list(free_list, block) == NULL) {
         return NULL;
@@ -41,11 +41,10 @@ bool deallocate_medium_block(
     if (delete_from_medium_block_list(allocated_list, *block) == NULL) {
         return false;
     }
+    merge_medium_block(block, true, free_list);
     set_block_flag(&(*block)->curr, IS_ALLOCATED_FLAG, false);
     set_next_block_flag_(*block, IS_ALLOCATED_FLAG, false);
     add_to_medium_block_list(free_list, *block);
-
-    // TODO: Merge blocks
     return true;
 }
 
@@ -59,7 +58,16 @@ t_medium_block* reallocate_medium_block(
         return block;
     }
 
-    // TODO: merge with next block
+    // no backward merging allowed because the original ptr
+    // needs to stay valid
+    if (merge_medium_block(&block, false, free_list)) {
+        if (get_block_size(block->curr) >= size) {
+            if (is_last_block(block->curr)) {
+                split_medium_block(block, size, free_list);
+            }
+            return block;
+        }
+    }
 
     t_medium_block* new_block = allocate_medium_block(
         size,

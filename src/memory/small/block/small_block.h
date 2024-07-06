@@ -1,19 +1,20 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include "small_block_struct.h"
 #include "utils.h"
 
 // ---------------------- inline functions -----------------------
 
-/// @brief returns the small_block structure associated to
+/// @brief returns the small block structure associated to
 ///        an allocated block of memory
 /// @param ptr A pointer pointing to the usable memory in
-///            the small_block structure
+///            the small block structure
 /// @return The structure associated to the memory
 inline t_small_block* get_small_block(void* ptr) {
-    return (t_small_block*)((size_t)ptr - sizeof(t_small_block));
+    return (t_small_block*)((uintptr_t)ptr - sizeof(t_small_block));
 }
 
 /// @brief Returns the data pointer assoiciated to a
@@ -23,7 +24,7 @@ inline t_small_block* get_small_block(void* ptr) {
 /// @return A pointer to the usable data region
 ///         in the memory block
 inline void* get_small_block_data(t_small_block* block) {
-    return (void*)((size_t)block + sizeof(*block));
+    return (void*)((uintptr_t)block + sizeof(*block));
 }
 
 /// @brief Returns a pointer pointing to the address just behind
@@ -35,7 +36,7 @@ inline void* get_small_block_data(t_small_block* block) {
 /// @attention Dereferencing this pointer is undefined behaviour
 inline void* get_small_block_data_end(t_small_block* block) {
     return (void*)(
-        (size_t)get_small_block_data(block) +
+        (uintptr_t)get_small_block_data(block) +
         get_block_size(block->curr)
     );
 }
