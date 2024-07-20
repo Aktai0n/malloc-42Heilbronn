@@ -3,7 +3,6 @@
 #include <stddef.h>
 
 #include "../block/small_block_struct.h"
-
 #include "small_page_struct.h"
 
 // ---------------------- small_page_list.c -----------------------
