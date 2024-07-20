@@ -139,7 +139,7 @@ test_merge_small_block_(t_small_block** blocks) {
     if (block == old_ptr) {
         return "Pointer to block not updated";
     } else if (prev != NULL && !is_allocated(prev->curr)) {
-        return "Block not merged mit previous free block";
+        return "Block not merged with previous free block";
     } else if (get_block_size(block->curr) <= get_block_size(old_block.curr)) {
         return "Block size not properly updated";
     } else if (is_allocated(old_block.curr) != is_allocated(block->curr)) {

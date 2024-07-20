@@ -8,8 +8,8 @@ static t_medium_block* merge_with_next_(
 ) {
     // increase the capacity of block
     size_t block_size = get_block_size(block->curr);
-    size_t next_size = get_block_size(block->curr);
-    size_t new_size = block_size + new_size + sizeof(*next);
+    size_t next_size = get_block_size(next->curr);
+    size_t new_size = block_size + next_size + sizeof(*next);
     set_block_size(&block->curr, new_size);
 
     // transfer flags
@@ -44,7 +44,7 @@ bool merge_medium_block(
         next = get_next_medium_block(*block);
     }
     if (merge_backwards) {
-        t_medium_block* prev = get_prev_medium_block(block);
+        t_medium_block* prev = get_prev_medium_block(*block);
         while (prev != NULL && !is_allocated(prev->curr)) {
             if (delete_from_medium_block_list(free_list, prev) == NULL) {
                 break;
@@ -77,7 +77,7 @@ bool split_medium_block(
 
     // create and initialize new block
     t_medium_block* new_block = (t_medium_block*)(
-        (size_t)get_medium_block_data(block) + split_size
+        (uintptr_t)get_medium_block_data(block) + split_size
     );
     size_t new_block_size = block_size - (split_size + sizeof(*block));
     set_block_size(&new_block->curr, new_block_size);
