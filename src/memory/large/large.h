@@ -1,3 +1,6 @@
+#pragma once
+
+#include <stdbool.h>
 
 #include "page/large_page_struct.h"
 

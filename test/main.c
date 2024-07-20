@@ -28,6 +28,7 @@ static void execute_specific_tests_(int argc, char** argv) {
             test_small_block(&heap);
         } else if (strcmp(str, "m") == 0 || strcmp(str, "medium") == 0) {
             test_medium_page(&heap);
+            test_medium_block(&heap);
         }
     }
 }

@@ -38,7 +38,6 @@ t_medium_block* find_medium_block(
         list = list->next_ptr;
     }
     return best_fit;
-    
 }
 
 void add_to_medium_block_list(
