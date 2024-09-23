@@ -65,4 +65,8 @@
 #define FT_MALLOC_RELEASE_LOCK(mutex) (void)mutex
 #endif
 
+#ifdef FT_MALLOC_HISTORY
+#define FT_MALLOC_WRITE_ENTRY()
+#endif
+
 #endif // DEFINES_H

@@ -27,6 +27,7 @@ t_medium_block* allocate_medium(
             return block;
         }
     }
+
     t_medium_page* page = create_medium_page(SMALL_PAGE_SIZE, 0, pages);
     if (page == NULL) {
         return NULL;

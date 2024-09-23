@@ -12,7 +12,7 @@
 ///        memory page is created, added to the list and a block is
 ///        created in it
 /// @param size The minimal available bytes the block should have
-/// @param set_zero If set to True the data segmen in the block 
+/// @param set_zero If set to True the data segment in the block 
 ///                 will be zeroed
 /// @param pages The list of memory pages in which to search for
 ///              an available block
