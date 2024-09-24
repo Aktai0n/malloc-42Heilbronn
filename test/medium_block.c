@@ -218,6 +218,68 @@ test_merge_medium_block_(t_medium_block** blocks_start, t_medium_block** free_bl
     } else if (is_allocated(old_block.curr) != is_allocated(block->curr)) {
         return "Is allocated flag not transferred correctly";
     }
+    *blocks_start = block;
+    *free_blocks = block;
+    return NULL;
+}
+
+static const char*
+test_allocate_medium_block_(t_medium_block** alloc_blocks, t_medium_block** free_blocks) {
+    for (size_t i = 0; i < NUM_BLOCKS; ++i) {
+        const size_t size = ALIGN_ALLOC_SIZE(
+            TINY_ALLOC_BLOCK_SIZE + (i % SMALL_ALLOC_BLOCK_SIZE),
+            FT_MALLOC_ALIGNMENT
+        );
+        t_medium_block* block = allocate_medium_block(size, free_blocks, alloc_blocks);
+        t_medium_block* next = get_next_medium_block(block);
+        if (block == NULL) {
+            return "Block overhead too big";
+        } else if (get_block_size(block->curr) < size) {
+            return "Block size too small";
+        } else if (!is_allocated(block->curr)) {
+            return "Block not marked as allocated";
+        } else if (next != NULL && !is_allocated(next->prev)) {
+            return "Is Allocated flag not set in next block";
+        } else if (find_medium_block_in_list_(*alloc_blocks, block) == NULL) {
+            return "New block not added to allocated list";
+        } else if (find_medium_block_in_list_(*free_blocks, block) != NULL) {
+            return "New block not removed from free list";
+        }
+    }
+    for (t_medium_block* block = *alloc_blocks; block != NULL; block = block->next_ptr) {
+        t_medium_block* next = get_next_medium_block(block);
+        t_medium_block* prev = get_prev_medium_block(block);
+        if (prev != NULL && get_next_medium_block(prev) != block) {
+            return "Prev block not properly set";
+        } else if (next != NULL && (!is_allocated(next->prev) ||
+            get_prev_medium_block(next) != block)) {
+            return "Next block not properly set";
+        }
+        next = block->next_ptr;
+        prev = block->prev_ptr;
+        if (next != NULL && next->prev_ptr != block) {
+            return "Next ptr not properly set";
+        } else if (prev != NULL && prev->next_ptr != block) {
+            return "Prev ptr not properly set";
+        }
+    }
+    for (t_medium_block* block = *free_blocks; block != NULL; block = block->next_ptr) {
+        t_medium_block* next = get_next_medium_block(block);
+        t_medium_block* prev = get_prev_medium_block(block);
+        if (prev != NULL && get_next_medium_block(prev) != block) {
+            return "Prev block not properly set";
+        } else if (next != NULL && (!is_allocated(next->prev) ||
+            get_prev_medium_block(next) != block)) {
+            return "Next block not properly set";
+        }
+        next = block->next_ptr;
+        prev = block->prev_ptr;
+        if (next != NULL && next->prev_ptr != block) {
+            return "Next ptr not properly set";
+        } else if (prev != NULL && prev->next_ptr != block) {
+            return "Prev ptr not properly set";
+        }
+    }
     return NULL;
 }
 
@@ -262,4 +324,6 @@ void test_medium_block(struct s_heap* heap) {
     execute_test_(test_split_medium_block_, "split medium block: ", alloc_blocks, free_blocks);
 
     execute_test_(test_merge_medium_block_, "merge medium block: ", &blocks_start, free_blocks);
+
+    execute_test_(test_allocate_medium_block_, "allocate medium blocks: ", alloc_blocks, free_blocks);
 }

@@ -60,8 +60,9 @@ inline void copy_medium_block_data(
 ///        marks it as in use and appends it to the allocated list
 /// @param size The minimal available bytes the block should have
 /// @param free_list The list of free memory blocks on this memory page
-/// @param allocated_list The list of allocated memory blocks
-///                       on this memory page
+///                  the new block will be taken from
+/// @param allocated_list The list of allocated memory blocks on this
+///                       memory page the new block will be added to
 /// @return The reserved block of memory or
 ///         NULL if no fitting block was found
 t_medium_block* allocate_medium_block(

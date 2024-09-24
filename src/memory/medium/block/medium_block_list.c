@@ -30,7 +30,7 @@ t_medium_block* find_medium_block(
         if (block_size == size) {
             return list;
         } else if (block_size > size &&
-            (best_fit != NULL ||
+            (best_fit == NULL ||
             block_size - size < get_block_size(best_fit->curr) - size)
         ) {
             best_fit = list;
