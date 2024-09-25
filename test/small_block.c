@@ -188,7 +188,7 @@ test_reallocate_small_block_(t_small_block** blocks) {
         if (block == NULL) {
             return "Not enough blocks to test with";
         }
-        t_small_block* next = get_next_small_block(block);
+        // t_small_block* next = get_next_small_block(block);
         const size_t new_size = ALIGN_ALLOC_SIZE(
             (i * 2) % TINY_ALLOC_BLOCK_SIZE,
             FT_MALLOC_ALIGNMENT
@@ -211,6 +211,16 @@ test_reallocate_small_block_(t_small_block** blocks) {
             } else if (data[0] != c || data[pos] != c || data[size - 1] != c) {
                 return "Data not properly copied";
             }
+        }
+        bool backwards = is_last_block(block->curr);
+        t_small_block* next = block;
+        while (!is_allocated(next->curr) || next == block) {
+            if (backwards) {
+                next = get_prev_small_block(next);
+            } else {
+                next = get_next_small_block(next);
+            }
+            backwards = is_last_block(next->curr) || !is_last_block(next->prev);
         }
         block = next;
     }
