@@ -38,7 +38,7 @@ bool release_memory(void* ptr) {
             &g_heap.small_pages
         );
     }
-    t_large_page* large_page = find_in_large_page_list(ptr, &g_heap.large_pages);
+    t_large_page* large_page = find_in_large_page_list(ptr, g_heap.large_pages);
     if (large_page != NULL) {
         return deallocate_large(large_page, &g_heap.large_pages);
     }

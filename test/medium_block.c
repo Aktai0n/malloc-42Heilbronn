@@ -246,6 +246,7 @@ test_allocate_medium_block_(t_medium_block** alloc_blocks, t_medium_block** free
             return "New block not removed from free list";
         }
     }
+
     for (t_medium_block* block = *alloc_blocks; block != NULL; block = block->next_ptr) {
         t_medium_block* next = get_next_medium_block(block);
         t_medium_block* prev = get_prev_medium_block(block);
@@ -279,6 +280,76 @@ test_allocate_medium_block_(t_medium_block** alloc_blocks, t_medium_block** free
         } else if (prev != NULL && prev->next_ptr != block) {
             return "Prev ptr not properly set";
         }
+    }
+    return NULL;
+}
+
+static const char*
+test_reallocate_medium_block_(t_medium_block** alloc_blocks, t_medium_block** free_blocks) {
+    t_medium_block* block = *alloc_blocks;
+    for (size_t i = 0; i < NUM_BLOCKS; ++i) {
+        if (block == NULL) {
+            return "Not enough blocks to test with";
+        }
+        t_medium_block* next = block->next_ptr;
+        const size_t new_size = ALIGN_ALLOC_SIZE(
+            TINY_ALLOC_BLOCK_SIZE + ((i * 2) % SMALL_ALLOC_BLOCK_SIZE),
+            FT_MALLOC_ALIGNMENT
+        );
+        char* data = get_medium_block_data(block);
+        size_t size = get_block_size(block->curr);
+        if (size != 0) {
+            const size_t pos = i % size;
+            const char c = (char)(i % 26) + 'A';
+            data[0] = c;
+            data[pos] = c;
+            data[size - 1] = c;
+            block = reallocate_medium_block(block, new_size, free_blocks, alloc_blocks);
+            data = get_medium_block_data(block);
+            if (block == NULL) {
+                return "Page not suitable for testing";
+            }
+            if (get_block_size(block->curr) < new_size) {
+                return "Size not big enough after realloc";
+            } else if (data[0] != c || data[pos] != c || data[size - 1] != c) {
+                return "Data not properly copied";
+            }
+        }
+        block = next;
+    }
+    return NULL;
+}
+
+static const char*
+test_deallocate_medium_block_(t_medium_block** alloc_blocks, t_medium_block** free_blocks) {
+    t_medium_block* block = *alloc_blocks;
+    for (size_t i = 0; i < NUM_BLOCKS; ++i) {
+        if (block == NULL) {
+            return "Not enough blocks to test with";
+        }
+        t_medium_block* next_ptr = block->next_ptr;
+        t_medium_block* prev_ptr = block->prev_ptr;
+        deallocate_medium_block(&block, free_blocks, alloc_blocks);
+        t_medium_block* next = get_next_medium_block(block);
+        t_medium_block* prev = get_prev_medium_block(block);
+        if (is_allocated(block->curr)) {
+            return "Is Allocated flag not reset";
+        } else if (next != NULL && !is_allocated(next->curr)) {
+            return "Not merged with next free block";
+        } else if (prev != NULL && !is_allocated(prev->curr)) {
+            return "Not merged with prev free block";
+        } else if (next != NULL && is_allocated(next->prev)) {
+            return "Is Allocated flag not reset in next block";
+        } else if (find_medium_block_in_list_(*alloc_blocks, block) != NULL) {
+            return "Block not removed from alloc list";
+        } else if (find_medium_block_in_list_(*free_blocks, block) == NULL) {
+            return "Block not added to free list";
+        } else if (next_ptr != NULL && block->next_ptr == next_ptr) {
+            return "Next ptr not updated";
+        } else if (prev_ptr != NULL && block->prev_ptr == prev_ptr) {
+            return "Prev ptr not updated";
+        }
+        block = next_ptr;
     }
     return NULL;
 }
@@ -325,5 +396,9 @@ void test_medium_block(struct s_heap* heap) {
 
     execute_test_(test_merge_medium_block_, "merge medium block: ", &blocks_start, free_blocks);
 
-    execute_test_(test_allocate_medium_block_, "allocate medium blocks: ", alloc_blocks, free_blocks);
+    execute_test_(test_allocate_medium_block_, "allocate medium block: ", alloc_blocks, free_blocks);
+
+    execute_test_(test_reallocate_medium_block_, "reallocate medium block: ", alloc_blocks, free_blocks);
+
+    execute_test_(test_deallocate_medium_block_, "deallocate medium block: ", alloc_blocks, free_blocks);
 }

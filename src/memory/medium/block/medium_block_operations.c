@@ -78,6 +78,6 @@ t_medium_block* reallocate_medium_block(
         return NULL;
     }
     copy_medium_block_data(block, new_block);
-    deallocate_medium_block(block, free_list, allocated_list);
+    deallocate_medium_block(&block, free_list, allocated_list);
     return new_block;
 }
