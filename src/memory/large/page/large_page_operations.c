@@ -3,9 +3,10 @@
 #include <sys/mman.h>
 
 #include "large_page.h"
-#include "../memory_page/memory_page.h"
 #include "defines.h"
 #include "utils.h"
+
+void* call_mmap(size_t size, int additional_flags);
 
 static void init_large_page_end_(t_large_page* page) {
     t_large_page_end* end = get_large_page_end(page);

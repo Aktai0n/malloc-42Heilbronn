@@ -13,8 +13,6 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-
-
 static void execute_specific_tests_(int argc, char** argv) {
     struct s_heap heap = {
         .tiny_pages = NULL,
@@ -28,6 +26,9 @@ static void execute_specific_tests_(int argc, char** argv) {
         } else if (strcmp(str, "s") == 0 || strcmp(str, "small") == 0) {
             test_small_page(&heap);
             test_small_block(&heap);
+        } else if (strcmp(str, "m") == 0 || strcmp(str, "medium") == 0) {
+            test_medium_page(&heap);
+            test_medium_block(&heap);
         }
     }
 }

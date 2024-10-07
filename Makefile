@@ -20,7 +20,7 @@ CC := cc
 CFLAGS = -std=gnu2x \
          -Wall -Wextra -Wconversion \
          -pedantic  \
-         -pthread -Wno-gnu-binary-literal # -fsanitize=address #-Werror 
+         -pthread -Wno-gnu-binary-literal -fvisibility=hidden # -fsanitize=address #-Werror 
 INCLUDES := -Iinc -I$(LIBFT_DIR)/inc -Isrc/utils/
 
 # linker config
@@ -71,6 +71,7 @@ fclean: | fclean_libs
 
 re: fclean all
 
+test: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS))
 test: CFLAGS += -g
 test: $(NAME)
 	$(CC) $(CFLAGS) $(INCLUDES)  $(TEST_SRC) -o $(TESTER_NAME) $(LDFLAGS)
@@ -82,10 +83,11 @@ test: $(NAME)
 run: test
 	@./$(TESTER_NAME)
 
+debug: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS))
 debug: CFLAGS += -g
 debug: re test
 
-.PHONY: all clean fclean re test run
+.PHONY: all clean fclean re test run debug
 
 # -------------------- libs rules -----------------------
 

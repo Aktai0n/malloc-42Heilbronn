@@ -1,5 +1,5 @@
 
-# Small block layout:
+## Small block layout:
 
 ```
 
@@ -12,7 +12,7 @@ Value:  0 1 0 0 0 ... 0
         | | |     |     
         | | |     size = 0
         | | |
-        | | reserve (unused)
+        | | reserved (unused)
         | |
         | IS_LAST_BLOCK = true
         |
@@ -20,3 +20,5 @@ Value:  0 1 0 0 0 ... 0
 
 
 ```
+
+## Small page layout

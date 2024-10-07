@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 /*
 ** MALLOC_ALIGNMENT controls the minimal amount of user overhead the 
@@ -14,7 +16,7 @@
 #ifndef FT_MALLOC_ALIGNMENT
 #define FT_MALLOC_ALIGNMENT (2 * sizeof(size_t))
 #else
-#if ((FT_MALLOC_ALIGNMENT & ~0x8) != 0 || FT_MALLOC_ALIGNMENT < 16)
+#if ((FT_MALLOC_ALIGNMENT % 0x8) != 0 || FT_MALLOC_ALIGNMENT < 16)
 #error "FT_MALLOC_ALIGNMENT malformed!"
 #endif
 #endif // FT_MALLOC_ALIGNMENT
@@ -26,6 +28,9 @@
 /// @return the rounded up size
 #define ALIGN_ALLOC_SIZE(size, alignment) \
     (size_t)(((size) + (alignment) - 1) & ~((alignment) - 1))
+
+#define PTR_IS_ALIGNED(ptr, alignment) \
+    (bool)(((uintptr_t)(const void*)(ptr)) % (alignment) == 0)
 
 /*
 ** Enable FT_MALLOC_USE_LOCKS to make the alloc family of functions thread safe
@@ -58,6 +63,10 @@
 #else
 #define FT_MALLOC_ACQUIRE_LOCK(mutex) (void)mutex
 #define FT_MALLOC_RELEASE_LOCK(mutex) (void)mutex
+#endif
+
+#ifdef FT_MALLOC_HISTORY
+#define FT_MALLOC_WRITE_ENTRY()
 #endif
 
 #endif // DEFINES_H

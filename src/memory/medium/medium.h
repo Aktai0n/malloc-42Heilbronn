@@ -1,9 +1,7 @@
 #pragma once
 
-#include <stdbool.h>
-
-#include "block/small_block_struct.h"
-#include "page/small_page.h"
+#include "block/medium_block_struct.h"
+#include "page/medium_page_struct.h"
 
 /// @brief Searches for an available block of memory with at least
 ///        `size` bytes of capacity in the given list of memory pages
@@ -18,15 +16,15 @@
 ///              an available block
 /// @return The reserved block of memory or
 ///         NULL if no new page could be created to accomidate the block
-t_small_block* allocate_small(
+t_medium_block* allocate_medium(
     const size_t size,
     const bool set_zero,
-    t_small_page** pages
+    t_medium_page** pages
 );
 
 /// @brief Changes the size of the given block of memory to fit at least
 ///        size bytes by:
-///        1. Calling `reallocate_small_block()`
+///        1. Calling `reallocate_medium_block()`
 ///        2. Searching in the other memory pages for a suitable block
 ///           and copying the contents over
 ///        3. Creating a new memory page and copying the contents over
@@ -36,11 +34,11 @@ t_small_block* allocate_small(
 /// @param pages The list of small memory pages on this heap
 /// @return The memory block with at least size bytes of capacity or
 ///         NULL if all the mentioned operations fail
-t_small_block* reallocate_small(
-    t_small_block* block,
+t_medium_block* reallocate_medium(
+    t_medium_block* block,
     const size_t size,
-    t_small_page* page,
-    t_small_page** pages
+    t_medium_page* page,
+    t_medium_page** pages
 );
 
 /// @brief Frees the given block of memory that's located on the given
@@ -52,8 +50,8 @@ t_small_block* reallocate_small(
 /// @return True if the block successfully marked as free or
 ///         False if the block was not in use or
 ///         an error occured in the freeing process
-bool deallocate_small(
-    t_small_block* block,
-    t_small_page* page,
-    t_small_page** page_list
+bool deallocate_medium(
+    t_medium_block* block,
+    t_medium_page* page,
+    t_medium_page** pages
 );

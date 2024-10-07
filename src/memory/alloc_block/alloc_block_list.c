@@ -36,8 +36,7 @@ t_alloc_block* find_alloc_block(t_alloc_block* list_head, const size_t size) {
         size_t block_size = get_alloc_size(block);
         if (block_size == size) {
             return block;
-        }
-        else if (
+        } else if (
             block_size > size &&
             (best_fit == NULL ||
             block_size - size < get_alloc_size(best_fit) - size)
