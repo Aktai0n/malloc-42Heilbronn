@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "large_page_struct.h"
 
@@ -19,7 +20,7 @@ inline size_t get_large_page_data_size(const t_large_page* page) {
 /// @return A pointer to the usable data region
 ///         in the memory page
 inline void* get_large_page_data(t_large_page* page) {
-    return (void*)((size_t)page + sizeof(*page));
+    return (void*)((uintptr_t)page + sizeof(*page));
 }
 
 /// @brief Returns the large page end structure located at the
@@ -30,7 +31,7 @@ inline void* get_large_page_data(t_large_page* page) {
 ///         memory page
 inline t_large_page_end* get_large_page_end(t_large_page* page) {
     return (t_large_page_end*)(
-        (size_t)page + (page->size - sizeof(t_large_page_end))
+        (uintptr_t)page + (page->size - sizeof(t_large_page_end))
     );
 }
 

@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #include "block/small_block_struct.h"
-#include "page/small_page.h"
+#include "page/small_page_struct.h"
 
 /// @brief Searches for an available block of memory with at least
 ///        `size` bytes of capacity in the given list of memory pages
