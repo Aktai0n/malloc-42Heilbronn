@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include "platform_specific.h"
 #include "defines.h"
+#include "ft_malloc.h"
 
 #if 1
 

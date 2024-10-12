@@ -1,4 +1,5 @@
-#include "ft_malloc.h"
+
+#include "ft_malloc_internal.h"
 #include "defines.h"
 #include "memory/memory.h"
 
@@ -10,5 +11,8 @@ void* realloc(void* ptr, size_t size) {
         free(ptr);
         return NULL;
     }
-    return reallocate_memory(ptr, size);
+    FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
+    void* ptr = reallocate_memory(ptr, size);
+    FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
+    return ;
 }
