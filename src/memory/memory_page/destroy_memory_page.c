@@ -3,14 +3,14 @@
 #include <errno.h>
 
 #include "memory_page.h"
-#include "ft_malloc.h"
+#include "ft_malloc_internal.h"
 
 bool reclaim_memory_page(t_memory_page* page) {
     t_memory_page** page_list = NULL;
     if (page->type == TINY_PAGE) {
-        page_list = &g_heap.tiny_pages;
-    } else if (page->type == SMALL_PAGE) {
         page_list = &g_heap.small_pages;
+    } else if (page->type == SMALL_PAGE) {
+        page_list = &g_heap.medium_pages;
     } else {
         page_list = &g_heap.large_pages;
     }

@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "memory_page.h"
+#include "memory.h"
 
 void* call_mmap(size_t size, int additional_flags) {
     void* ptr = mmap(
@@ -20,6 +20,8 @@ void* call_mmap(size_t size, int additional_flags) {
     return ptr;
 }
 
+#include "memory_page/memory_page.h"
+
 bool call_munmap(t_memory_page* page) {
     size_t size = page->size;
     if (munmap((void*)page, size) == -1) {
@@ -27,4 +29,3 @@ bool call_munmap(t_memory_page* page) {
     }
     return true;
 }
-

@@ -1,4 +1,11 @@
 
+
+
+#if 1
+
+
+#else
+
 #include <stdint.h>
 
 #include "ft_malloc.h"
@@ -75,3 +82,4 @@ void show_alloc_mem_ex(void) {
     print_memory_pages_(g_heap.small_pages);
     print_memory_pages_(g_heap.large_pages);
 }
+#endif

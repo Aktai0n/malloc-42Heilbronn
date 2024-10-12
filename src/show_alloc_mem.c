@@ -88,13 +88,13 @@ static void print_medium_(const t_medium_page* pages) {
     }
 }
 
-static const t_large_page* get_next_large_page_(
-    const t_large_page* current,
-    const t_large_page* pages
+static t_large_page* get_next_large_page_(
+    t_large_page* current,
+    t_large_page* pages
 ) {
-    const t_large_page* next = NULL;
+    t_large_page* next = NULL;
     ptrdiff_t min_diff = PTRDIFF_MAX;
-    for (const t_large_page* page = pages; page != NULL; page = page->next) {
+    for (t_large_page* page = pages; page != NULL; page = page->next) {
         ptrdiff_t diff = (intptr_t)page - (intptr_t)current;
         if (diff > 0 && diff <= min_diff) {
             min_diff = diff;
@@ -104,8 +104,8 @@ static const t_large_page* get_next_large_page_(
     return next;
 }
 
-static void print_large_(const t_large_page* pages) {
-    const t_large_page* page = get_next_large_page_(NULL, pages);
+static void print_large_(t_large_page* pages) {
+    t_large_page* page = get_next_large_page_(NULL, pages);
     while (page != NULL) {
         ft_printf("LARGE: %p\n", page);
         print_block_(
@@ -119,8 +119,8 @@ static void print_large_(const t_large_page* pages) {
 
 void show_alloc_mem(void) {
     struct s_heap* heap = &g_heap;
-    print_small_(heap->tiny_pages);
-    print_medium_(heap->small_pages);
+    print_small_(heap->small_pages);
+    print_medium_(heap->medium_pages);
     print_large_(heap->large_pages);
 }
 

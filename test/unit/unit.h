@@ -1,0 +1,11 @@
+#pragma once
+
+#include "ft_malloc_internal.h"
+
+void test_large_page(struct s_heap* heap);
+
+void test_medium_page(struct s_heap* heap);
+void test_medium_block(struct s_heap* heap);
+
+void test_small_page(struct s_heap* heap);
+void test_small_block(struct s_heap* heap);

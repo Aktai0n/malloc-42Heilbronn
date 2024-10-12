@@ -2,7 +2,7 @@
 
 #if 1
 
-#include "ft_malloc.h"
+#include "ft_malloc_internal.h"
 #include "defines.h"
 #include "small/small.h"
 #include "medium/medium.h"
@@ -17,7 +17,7 @@ void* allocate_memory(size_t size, bool set_zero) {
         t_small_block* block = allocate_small(
             size,
             set_zero,
-            &g_heap.tiny_pages
+            &g_heap.small_pages
         );
         if (block == NULL) {
             return NULL;
@@ -27,7 +27,7 @@ void* allocate_memory(size_t size, bool set_zero) {
         t_medium_block* block = allocate_medium(
             size,
             set_zero,
-            &g_heap.small_pages
+            &g_heap.medium_pages
         );
         if (block == NULL) {
             return NULL;

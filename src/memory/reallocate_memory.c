@@ -3,7 +3,7 @@
 
 #include <errno.h>
 
-#include "ft_malloc.h"
+#include "ft_malloc_internal.h"
 #include "defines.h"
 #include "small/small.h"
 #include "small/page/small_page.h"
@@ -28,7 +28,7 @@ static void* realloc_small_(
             old_block,
             size,
             page,
-            &heap->tiny_pages
+            &heap->small_pages
         );
         if (new_block != NULL) {
             return get_small_block_data(new_block);
@@ -37,7 +37,7 @@ static void* realloc_small_(
         t_medium_block* new_block = allocate_medium(
             size,
             false,
-            &heap->small_pages
+            &heap->medium_pages
         );
         if (new_block != NULL) {
             new_data = get_medium_block_data(new_block);
@@ -52,7 +52,7 @@ static void* realloc_small_(
     if (new_data != NULL) {
         size = size < old_size ? size : old_size;
         ft_malloc_memcpy(old_data, new_data, size);
-        deallocate_small(old_block, page, &heap->tiny_pages);
+        deallocate_small(old_block, page, &heap->small_pages);
     }
     return new_data;
 }
@@ -71,7 +71,7 @@ static void* realloc_medium_(
             old_block,
             size,
             page,
-            &heap->small_pages
+            &heap->medium_pages
         );
         if (new_block != NULL) {
             return get_medium_block_data(new_block);
@@ -86,7 +86,7 @@ static void* realloc_medium_(
     if (new_data != NULL) {
         size = size < old_size ? size : old_size;
         ft_malloc_memcpy(old_data, new_data, size);
-        deallocate_medium(old_block, page, &heap->small_pages);
+        deallocate_medium(old_block, page, &heap->medium_pages);
     }
     return new_data;
 }
@@ -103,7 +103,7 @@ static void* realloc_large_(
         t_small_block* new_block = allocate_small(
             size,
             false,
-            &heap->tiny_pages
+            &heap->small_pages
         );
         if (new_block != NULL) {
             new_data = get_small_block_data(new_block);
@@ -112,7 +112,7 @@ static void* realloc_large_(
         t_medium_block* new_block = allocate_medium(
             size,
             false,
-            &heap->small_pages
+            &heap->medium_pages
         );
         if (new_block != NULL) {
             new_data = get_medium_block_data(new_block);
@@ -143,11 +143,11 @@ void* reallocate_memory(void* ptr, size_t size) {
         return NULL;
     }
     size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
-    t_small_page* small_page = find_in_small_page_list(ptr, g_heap.tiny_pages);
+    t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
     if (small_page != NULL) {
         return realloc_small_(ptr, size, small_page, &g_heap);
     }
-    t_medium_page* medium_page = find_in_medium_page_list(ptr, g_heap.small_pages);
+    t_medium_page* medium_page = find_in_medium_page_list(ptr, g_heap.medium_pages);
     if (medium_page != NULL) {
         return realloc_medium_(ptr, size, medium_page, &g_heap);
     }

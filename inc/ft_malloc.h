@@ -1,15 +1,8 @@
-#ifndef FT_MALLOC_H
-#define FT_MALLOC_H
+#pragma once
 
-
-#include <sys/mman.h>
-#include <stdint.h>
-#include <unistd.h>
-
-#include "ft_malloc_internal.h"
+#include <stddef.h>
 
 #include "platform_specific.h"
-
 
 
 PUBLIC_SYMBOL void* malloc(size_t size);
@@ -21,6 +14,3 @@ PUBLIC_SYMBOL void show_alloc_mem(void);
 
 // BONUS
 void show_alloc_mem_ex(void);
-
-
-#endif // FT_MALLOC_H

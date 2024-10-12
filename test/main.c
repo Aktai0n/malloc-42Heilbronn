@@ -8,6 +8,7 @@
 #include "libft.h"
 #include "test.h"
 #include "colors.h"
+#include "unit/unit.h"
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -15,8 +16,8 @@
 
 static void execute_specific_tests_(int argc, char** argv) {
     struct s_heap heap = {
-        .tiny_pages = NULL,
         .small_pages = NULL,
+        .medium_pages = NULL,
         .large_pages= NULL
     };
     for (int i = 1; i < argc; ++i) {

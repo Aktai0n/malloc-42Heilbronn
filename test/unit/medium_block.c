@@ -374,7 +374,7 @@ execute_test_(
 }
 
 void test_medium_block(struct s_heap* heap) {
-    t_medium_page** pages = &g_heap.small_pages;
+    t_medium_page** pages = &g_heap.medium_pages;
     t_medium_page* page = NULL;
     page = create_medium_page(SMALL_PAGE_SIZE, 0, &page);
     if (page == NULL) {

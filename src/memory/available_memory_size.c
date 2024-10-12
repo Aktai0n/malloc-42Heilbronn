@@ -11,12 +11,12 @@
 #include "large/page/large_page.h"
 
 size_t available_memory_size(void* ptr, struct s_heap* heap) {
-    t_small_page* small_page = find_in_small_page_list(ptr, heap->tiny_pages);
+    t_small_page* small_page = find_in_small_page_list(ptr, heap->small_pages);
     if (small_page != NULL) {
         t_small_block* small_block = get_small_block(ptr);
         return get_block_size(small_block->curr);
     }
-    t_medium_page* medium_page = find_in_medium_page_list(ptr, heap->small_pages);
+    t_medium_page* medium_page = find_in_medium_page_list(ptr, heap->medium_pages);
     if (medium_page != NULL) {
         t_medium_block* medium_block = get_medium_block(ptr);
         return get_block_size(medium_block->curr);

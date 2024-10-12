@@ -6,14 +6,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/*
-** MALLOC_ALIGNMENT controls the minimal amount of user overhead the 
-** implementation produces.
-** E.g. With a MALLOC_ALIGNMENT of 16, if you allocate 1 byte
-** you are actually getting 16 bytes back
-** MALLOC_ALIGNMENT has to be at least 16 bytes and a power of 2
-*/
+
 #ifndef FT_MALLOC_ALIGNMENT
+/// @brief FT_MALLOC_ALIGNMENT controls the minimal amount of
+///        user overhead the implementation produces.
+/// @example With a FT_MALLOC_ALIGNMENT of 16, if you allocate 1 byte
+///          you are actually getting 16 bytes back
+/// @warning FTMALLOC_ALIGNMENT has to be at least 16 bytes and
+///          a power of 2
 #define FT_MALLOC_ALIGNMENT (2 * sizeof(size_t))
 #else
 #if ((FT_MALLOC_ALIGNMENT % 0x8) != 0 || FT_MALLOC_ALIGNMENT < 16)
