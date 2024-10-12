@@ -4,9 +4,8 @@
 
 #include "small_page.h"
 #include "../block/small_block.h"
+#include "../../memory.h"
 #include "defines.h"
-
-void* call_mmap(size_t size, int additional_flags);
 
 static void init_small_block_list_(t_small_page* page) {
     t_small_block* list = (t_small_block*)((size_t)page + sizeof(*page));

@@ -64,7 +64,7 @@ bool split_small_block(t_small_block* block, const size_t split_size) {
 
     // create and initialize new block
     t_small_block* new_block = (t_small_block*)(
-        (size_t)get_small_block_data(block) + split_size
+        (uintptr_t)get_small_block_data(block) + split_size
     );
     size_t new_block_size = block_size - (split_size + sizeof(*block));
     set_block_size(&new_block->curr, new_block_size);

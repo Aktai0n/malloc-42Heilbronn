@@ -4,9 +4,8 @@
 
 #include "medium_page.h"
 #include "../block/medium_block.h"
+#include "../../memory.h"
 #include "defines.h"
-
-void* call_mmap(size_t size, int additional_flags);
 
 static void init_medium_block_list_(t_medium_page* page) {
     t_medium_block* list = (t_medium_block*)((size_t)page + sizeof(*page));

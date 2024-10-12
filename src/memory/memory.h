@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "ft_malloc_internal.h"
+
 /// @brief Allocates a block of memory with the requested size
 /// @param size The size to be allocated
 /// @param set_zero If true all the memory in the block
@@ -34,12 +36,13 @@ void* reallocate_memory(void* ptr, size_t size);
 ///         False if not
 bool release_memory(void* ptr);
 
-/// @brief Finds the number of usable bytes a block that
-///        was allocated by malloc (or related)
+/// @brief Finds the number of usable bytes for an allocated
+///        block of memory
 /// @param ptr A pointer to an allocated block of memory
+/// @param heap The heap on which to search for `ptr`
 /// @return The usable size or
 ///         0 if `ptr` is not found on the heap
-size_t available_memory_size(void* ptr);
+size_t available_memory_size(void* ptr, struct s_heap* heap);
 
 
 // ---------------------- abi_wrappers.c -----------------------

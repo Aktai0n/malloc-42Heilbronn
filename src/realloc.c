@@ -1,8 +1,6 @@
-
 #include "ft_malloc_internal.h"
 #include "defines.h"
 #include "memory/memory.h"
-
 
 void* realloc(void* ptr, size_t size) {
     if (ptr == NULL) {
@@ -12,7 +10,7 @@ void* realloc(void* ptr, size_t size) {
         return NULL;
     }
     FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
-    void* ptr = reallocate_memory(ptr, size);
+    ptr = reallocate_memory(ptr, size);
     FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
-    return ;
+    return ptr;
 }

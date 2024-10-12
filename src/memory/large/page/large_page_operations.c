@@ -12,13 +12,6 @@ static void init_large_page_end_(t_large_page* page) {
     end->size = page->size;
 }
 
-#include "libft.h"
-static void print_large_page(t_large_page* page) {
-    t_large_page_end* end = get_large_page_end(page);
-    ft_printf("large page: %p\nsize=%u, prev=%p, next=%p\n", page, page->size, page->prev, page->next);
-    ft_printf("large page end: %p\nsize=%u\n", end, end->size);
-}
-
 t_large_page* create_large_page(
     size_t size,
     int additional_mmap_flags,
@@ -72,4 +65,3 @@ t_large_page* realloc_large_page(
     destroy_large_page(page, page_list);
     return new_page;
 }
-

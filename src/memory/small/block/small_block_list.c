@@ -6,7 +6,7 @@ t_small_block* get_next_small_block(t_small_block* block) {
         return NULL;
     }
     return (t_small_block*)(
-        (size_t)block + sizeof(*block) + get_block_size(block->curr)
+        (uintptr_t)block + sizeof(*block) + get_block_size(block->curr)
     );
 }
 
@@ -16,7 +16,7 @@ t_small_block* get_prev_small_block(t_small_block* block) {
         return NULL;
     }
     return (t_small_block*)(
-        (size_t)block - (sizeof(*block) + prev_size)
+        (uintptr_t)block - (sizeof(*block) + prev_size)
     );
 }
 

@@ -2,7 +2,6 @@
 #include "large_page.h"
 #include "utils.h"
 
-
 void add_to_large_page_list(t_large_page** list, t_large_page* new_page) {
     if (*list != NULL) {
         new_page->next = *list;

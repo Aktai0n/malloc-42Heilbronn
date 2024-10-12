@@ -3,6 +3,9 @@
 
 #if 1
 
+void show_alloc_mem_ex(void) {
+    
+}
 
 #else
 
