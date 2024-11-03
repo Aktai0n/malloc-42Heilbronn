@@ -28,3 +28,10 @@ bool ft_is_in_region(
     const void* region_start,
     size_t region_size
 );
+
+/// @brief Writes `size` number of bytes pointed to by `ptr`
+///        in hexadecimal to the file descriptor `fd`
+/// @param fd The file descriptor to write to. E.g. `STDOUT_FILENO`
+/// @param ptr A pointer to the memory that should be displayed
+/// @param size The number of bytes that should be written
+void ft_malloc_print_bytes(int fd, void* ptr, size_t size);

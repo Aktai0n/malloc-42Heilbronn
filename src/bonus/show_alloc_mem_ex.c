@@ -3,6 +3,19 @@
 
 #if 1
 
+#include "ft_malloc_internal.h"
+#include "libft.h"
+
+#include <stdint.h>
+
+static void print_bytes_(void* ptr, size_t size) {
+    uint8_t* bytes = (uint8_t*)ptr;
+    for (size_t i = 0; i < size; ++i) {
+        ft_printf(" %b ", bytes[i]);
+    }
+}
+
+
 void show_alloc_mem_ex(void) {
     
 }
