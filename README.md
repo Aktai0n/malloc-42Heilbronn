@@ -11,3 +11,5 @@ https://www.man7.org/linux/man-pages/man1/gcc.1.html (for the -fPIE, -Wl, -stati
 
 https://stackoverflow.com/questions/2053029/how-exactly-does-attribute-constructor-work (for constructor and destructor)
 [visibility in C and C++](https://gcc.gnu.org/wiki/Visibility)
+
+[Working with shared libs](https://amir.rachum.com/shared-libraries/)

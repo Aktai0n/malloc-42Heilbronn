@@ -25,7 +25,7 @@ INCLUDES := -Iinc -I$(LIBFT_DIR)/inc -Isrc/utils/
 
 # linker config
 LDFLAGS = $(LIBMALLOC) $(LIBFT) \
-           -Wl,-rpath,$(LIBMALLOC_DIR)
+           -Wl,-rpath,$(PWD)
 
 # archive (library) config
 AR := ar
@@ -106,7 +106,7 @@ fclean_libs:
 
 # copy the directory tree from $(SDIR) to $(ODIR)
 $(ODIR):
-	$(MKDIR) $(patsubst $(SDIR)/%, $(ODIR)% , $(shell find $(SDIR)/ -type d))
+	$(MKDIR) $(patsubst $(SDIR)/%, $(ODIR)/% , $(shell find $(SDIR)/ -type d))
 
 $(ODIR)/%.o: $(SDIR)/%.c | $(ODIR) libs
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@ $(INCLUDES)
