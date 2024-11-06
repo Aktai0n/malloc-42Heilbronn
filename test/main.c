@@ -9,6 +9,8 @@
 #include "test.h"
 #include "colors.h"
 #include "unit/unit.h"
+#include "integration/integration.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -26,6 +28,9 @@ static void execute_specific_tests_(int argc, char** argv, struct s_heap* heap) 
         } else if (strcmp(str, "m") == 0 || strcmp(str, "medium") == 0) {
             test_medium_page(heap);
             test_medium_block(heap);
+        } else if (strcmp(str, "i") == 0 || strcmp(str, "integration") == 0) {
+            const char* file = "/home/skienzle/Coding/42Heilbronn/malloc-42Heilbronn/test/integration/test_dracula.txt";
+            test_with_gnl(file);
         }
     }
 }
