@@ -89,6 +89,8 @@ bool split_medium_block(
         set_block_flag(&block->curr, IS_LAST_BLOCK_FLAG, false);
     } else {
         set_block_flag(&new_block->curr, IS_LAST_BLOCK_FLAG, false);
+        t_medium_block* next = get_next_medium_block(block);
+        next->prev = new_block->curr;
     }
 
     // shrink original block
