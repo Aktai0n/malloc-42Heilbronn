@@ -63,10 +63,10 @@ static bool is_last_page_(
 }
 
 static bool is_last_block_on_page_(
-    const t_small_block* block,
+    t_small_block* block,
     const t_small_page* page
 ) {
-    return page->block_list == block &&
+    return block == page->block_list &&
         is_last_block(block->curr);
 }
 
@@ -81,11 +81,11 @@ bool deallocate_small(
         return false;
     }
 
+    deallocate_small_block(&block);
     if (is_last_block_on_page_(block, page) &&
         !is_last_page_(page, *page_list)
     ) {
         return destroy_small_page(page, page_list);
     }
-    deallocate_small_block(&block);
     return true;
 }

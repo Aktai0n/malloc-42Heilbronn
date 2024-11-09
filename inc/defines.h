@@ -32,7 +32,7 @@
 #define PTR_IS_ALIGNED(ptr, alignment) \
     (bool)(((uintptr_t)(const void*)(ptr)) % (alignment) == 0)
 
-#define FT_MALLOC_BONUS 1
+// #define FT_MALLOC_BONUS 1
 
 /*
 ** Enable FT_MALLOC_USE_LOCKS to make the alloc family of functions thread safe

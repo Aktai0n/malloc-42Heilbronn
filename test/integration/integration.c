@@ -18,15 +18,21 @@ void test_with_gnl(const char* file) {
     if (lines == NULL) {
         return;
     }
-    for (size_t i = 1;(str = get_next_line(fd)); ++i) {
-        ft_printf("%u: %s", i, str);
-        lines = realloc(lines, i * sizeof(char*));
+    size_t i = 0;
+    for (;(str = get_next_line(fd)); ++i) {
+        // ft_printf("%u: %s", i, str);
+        lines = realloc(lines, (i + 1) * sizeof(char*));
         if (lines == NULL) {
-            return;
+            break;
         }
         // show_alloc_mem();
         lines[i] = str;
     }
+    for (i = 0; lines[i] != NULL; ++i) {
+        ft_printf("%u: %s", i + 1, lines[i]);
+        free(lines[i]);
+    }
+    free(lines);
     close(fd);
-    show_alloc_mem();
+    // show_alloc_mem();
 }

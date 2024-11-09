@@ -19,8 +19,6 @@ struct s_heap {
 ///        Defined in `constructor_and_destructor.c`
 extern struct s_heap g_heap;
 
-#ifdef FT_MALLOC_USE_LOCKS
 /// @brief Global mutex to make allocations thread safe.
 ///        Defined in `constructor_and_destructor.c`
 extern pthread_mutex_t g_alloc_mutex;
-#endif

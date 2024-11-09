@@ -134,11 +134,11 @@ static void* realloc_large_(
 }
 
 void* reallocate_memory(void* ptr, size_t size) {
-    if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
-        !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
-        errno = EFAULT;
-        return NULL;
-    }
+    // if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
+    //     !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
+    //     errno = EFAULT;
+    //     return NULL;
+    // }
     size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
     t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
     if (small_page != NULL) {

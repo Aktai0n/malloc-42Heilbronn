@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
         execute_specific_tests_(argc, argv, &heap);
         return 0;
     }
+
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "------------ Start Unit Tests ------------\n\n");
     test_small_page(&heap);
     test_small_block(&heap);

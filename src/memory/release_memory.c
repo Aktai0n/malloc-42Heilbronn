@@ -13,11 +13,11 @@
 #include "large/page/large_page.h"
 
 bool release_memory(void* ptr) {
-    if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
-        !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
-        errno = EFAULT;
-        return false;
-    }
+    // if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
+    //     !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
+    //     errno = EFAULT;
+    //     return false;
+    // }
     t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
     if (small_page != NULL) {
         return deallocate_small(
