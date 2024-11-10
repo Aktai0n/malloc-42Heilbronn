@@ -96,16 +96,16 @@ static void* realloc_large_(
 ) {
     void* new_data = NULL;
     size_t old_size = get_large_page_data_size(page);
-    if (size <= TINY_ALLOC_BLOCK_SIZE) {
-        t_small_block* new_block = allocate_small(
-            size,
-            false,
-            &heap->small_pages
-        );
-        if (new_block != NULL) {
-            new_data = get_small_block_data(new_block);
-        }
-    } else if (size <= SMALL_ALLOC_BLOCK_SIZE) {
+    // if (size <= TINY_ALLOC_BLOCK_SIZE) {
+    //     t_small_block* new_block = allocate_small(
+    //         size,
+    //         false,
+    //         &heap->small_pages
+    //     );
+    //     if (new_block != NULL) {
+    //         new_data = get_small_block_data(new_block);
+    //     }
+     if (size <= SMALL_ALLOC_BLOCK_SIZE) {
         t_medium_block* new_block = allocate_medium(
             size,
             false,
@@ -140,10 +140,10 @@ void* reallocate_memory(void* ptr, size_t size) {
     //     return NULL;
     // }
     size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
-    t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
-    if (small_page != NULL) {
-        return realloc_small_(ptr, size, small_page, &g_heap);
-    }
+    // t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
+    // if (small_page != NULL) {
+    //     return realloc_small_(ptr, size, small_page, &g_heap);
+    // }
     t_medium_page* medium_page = find_in_medium_page_list(ptr, g_heap.medium_pages);
     if (medium_page != NULL) {
         return realloc_medium_(ptr, size, medium_page, &g_heap);

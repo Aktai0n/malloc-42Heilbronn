@@ -40,7 +40,7 @@ bool merge_medium_block(
             break;
         }
         ret = true;
-        merge_with_next_(*block, next);
+        *block = merge_with_next_(*block, next);
         next = get_next_medium_block(*block);
     }
     if (merge_backwards) {

@@ -15,7 +15,7 @@ void free(void* ptr) {
     int save_errno = errno;
     FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
     if (!release_memory(ptr)) {
-        ft_dprintf(STDERR_FILENO, "free failed: %s\n", strerror(errno));
+        // ft_dprintf(STDERR_FILENO, "free failed: %s\n", strerror(errno));
     }
     FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
     errno = save_errno;

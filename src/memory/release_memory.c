@@ -18,14 +18,14 @@ bool release_memory(void* ptr) {
     //     errno = EFAULT;
     //     return false;
     // }
-    t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
-    if (small_page != NULL) {
-        return deallocate_small(
-            get_small_block(ptr),
-            small_page,
-            &g_heap.small_pages
-        );
-    }
+    // t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
+    // if (small_page != NULL) {
+    //     return deallocate_small(
+    //         get_small_block(ptr),
+    //         small_page,
+    //         &g_heap.small_pages
+    //     );
+    // }
     t_medium_page* medium_page = find_in_medium_page_list(ptr, g_heap.medium_pages);
     if (medium_page != NULL) {
         return deallocate_medium(

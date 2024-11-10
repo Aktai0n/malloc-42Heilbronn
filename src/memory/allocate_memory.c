@@ -9,17 +9,17 @@
 
 void* allocate_memory(size_t size, bool set_zero) {
     size = ALIGN_ALLOC_SIZE(size, FT_MALLOC_ALIGNMENT);
-    if (size <= TINY_ALLOC_BLOCK_SIZE) {
-        t_small_block* block = allocate_small(
-            size,
-            set_zero,
-            &g_heap.small_pages
-        );
-        if (block == NULL) {
-            return NULL;
-        }
-        return get_small_block_data(block);
-    } else if (size <= SMALL_ALLOC_BLOCK_SIZE) {
+    // if (size <= TINY_ALLOC_BLOCK_SIZE) {
+    //     t_small_block* block = allocate_small(
+    //         size,
+    //         set_zero,
+    //         &g_heap.small_pages
+    //     );
+    //     if (block == NULL) {
+    //         return NULL;
+    //     }
+    //     return get_small_block_data(block);
+    if (size <= SMALL_ALLOC_BLOCK_SIZE) {
         t_medium_block* block = allocate_medium(
             size,
             set_zero,
