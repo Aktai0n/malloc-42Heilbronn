@@ -29,8 +29,8 @@ static void execute_specific_tests_(int argc, char** argv, struct s_heap* heap) 
             test_medium_page(heap);
             test_medium_block(heap);
         } else if (strcmp(str, "i") == 0 || strcmp(str, "integration") == 0) {
-            // const char* file = "/home/skienzle/Coding/42Heilbronn/malloc-42Heilbronn/test/integration/test_dracula.txt";
-            const char* file = "/Users/skienzle/42Projects/private_github_repos/malloc-42Heilbronn/test/integration/test_dracula.txt";
+            const char* file = "/home/skienzle/Coding/42Heilbronn/malloc-42Heilbronn/test/integration/test_dracula.txt";
+            // const char* file = "/Users/skienzle/42Projects/private_github_repos/malloc-42Heilbronn/test/integration/test_dracula.txt";
             test_with_gnl(file);
         }
     }

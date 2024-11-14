@@ -49,6 +49,7 @@ void add_to_medium_block_list(
         (*list)->prev_ptr = to_add;
     }
     *list = to_add;
+    to_add->prev_ptr = NULL;
 }
 
 t_medium_block* delete_from_medium_block_list(
@@ -76,5 +77,5 @@ bool medium_block_is_corrupted(t_medium_block* block) {
     if (next == NULL) {
         return false;
     }
-    return get_prev_medium_block(block) != block;
+    return get_prev_medium_block(next) != block;
 }

@@ -8,3 +8,8 @@
 /// @return the usable size or 0 if ptr is NULL or not
 ///         a pointer allocated through malloc (or related)
 size_t malloc_usable_size(void* ptr);
+
+/// @brief Scans all blocks on the heap for overflow.
+///        If a corrupted section is found the info
+///        is printed to stderr
+void check_heap(void);
