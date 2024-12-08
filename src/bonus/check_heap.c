@@ -39,7 +39,7 @@ void check_small(t_small_page* page) {
     }
 }
 
-t_medium_block* get_first_medium_block_(t_medium_page* page) {
+static t_medium_block* get_first_medium_block_(t_medium_page* page) {
     if (page->allocated_list == NULL && page->free_list == NULL) {
         return NULL;
     }
