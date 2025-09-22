@@ -147,9 +147,9 @@ execute_test_(
 }
 
 void test_medium_page(struct s_heap* heap) {
-    // t_medium_page** pages = &heap->medium_pages;
-    t_medium_page* page = NULL;
-    t_medium_page** pages = &page;
+    t_medium_page** pages = &heap->medium_pages;
+    // t_medium_page* page = NULL;
+    // t_medium_page** pages = &page;
 
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "Tests for medium pages:\n\n");
 

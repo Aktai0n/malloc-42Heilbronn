@@ -50,6 +50,7 @@ int main(int argc, char** argv) {
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "------------ Start Unit Tests ------------\n\n");
     test_small_page(&heap);
     test_small_block(&heap);
+    show_alloc_mem_ex();
     test_medium_page(&heap);
     test_medium_block(&heap);
     test_large_page(&heap);

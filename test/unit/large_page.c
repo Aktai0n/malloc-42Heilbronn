@@ -191,9 +191,9 @@ execute_test_(
 }
 
 void test_large_page(struct s_heap* heap) {
-    // t_large_page** pages = &heap.large_pages;
-    t_large_page* page = NULL;
-    t_large_page** pages = &page;
+    t_large_page** pages = &heap->large_pages;
+    // t_large_page* page = NULL;
+    // t_large_page** pages = &page;
 
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "Tests for large pages:\n\n");
 

@@ -137,9 +137,9 @@ execute_test_(
 }
 
 void test_small_page(struct s_heap* heap) {
-    // t_small_page** pages = &heap->small_pages;
-    t_small_page* page = NULL;
-    t_small_page** pages = &page;
+    t_small_page** pages = &heap->small_pages;
+    // t_small_page* page = NULL;
+    // t_small_page** pages = &page;
 
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "Tests for small pages:\n\n");
 
