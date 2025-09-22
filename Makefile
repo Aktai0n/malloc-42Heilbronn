@@ -39,6 +39,9 @@ LNFLAGS = -sf
 RM := rm -rf
 MKDIR := mkdir -p
 
+#strip config
+STRIP_CMD := strip -x $(NAME)
+
 # -------------------- dependencies ---------------------
 
 SDIR := src
@@ -57,7 +60,7 @@ all: $(NAME)
 $(NAME): $(OBJ) | libs
 	$(CC) -shared $(CFLAGS) $(LIBFT) $(OBJ) -o $@
 # TODO: Check on linux if -x exists. Otherwise use with --strip-unneeded
-	strip -x $(NAME)
+	$(STRIP_CMD)
 	$(LN) $(LNFLAGS) $@ $(LINK_NAME)
 
 $(LINK_NAME): $(NAME)
@@ -74,11 +77,11 @@ fclean: | fclean_libs
 re: fclean all
 
 bonus: CFLAGS += -DFT_MALLOC_BONUS=1
-bonus: re
+bonus: all
 
-test: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS))
-test: CFLAGS += -g
-test: $(NAME)
+test: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS)) -DFT_MALLOC_BONUS=1
+test: STRIP_CMD = 
+test: bonus
 	$(CC) $(CFLAGS) $(INCLUDES)  $(TEST_SRC) -o $(TESTER_NAME) $(LDFLAGS)
 
 # TODO: Check on MacOS whether loading the libaries dynamically still works
@@ -90,7 +93,7 @@ run: test
 
 debug: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS))
 debug: CFLAGS += -g
-debug: re test
+debug: test
 
 .PHONY: all clean fclean re test run debug
 
