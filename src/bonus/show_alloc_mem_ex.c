@@ -10,9 +10,11 @@
 #include <stdint.h>
 
 static void print_bytes_(int fd, void* ptr, size_t size, const char* color) {
+#ifdef FT_MALLOC_BONUS
     if (!isatty(fd)) {
         color = NULL;
     }
+#endif
     const size_t row_len = FT_MALLOC_ALIGNMENT;
     size_t i = 0;
     for (;(i + row_len) < size; i += row_len) {

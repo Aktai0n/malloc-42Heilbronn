@@ -9,7 +9,8 @@ CC := cc
 CFLAGS = -std=c99 \
          -Wall -Wextra -Wconversion \
          -pedantic  \
-         -Werror 
+         -Werror \
+         -fvisibility=hidden
 INC_DIR := inc
 
 # archive (library) config

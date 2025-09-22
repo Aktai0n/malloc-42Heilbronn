@@ -1,4 +1,6 @@
 
+#include <errno.h>
+
 #include "ft_malloc_internal.h"
 #include "libft.h"
 #include "utils.h"
@@ -77,5 +79,6 @@ void show_alloc_block(void* ptr) {
         print_medium_(ptr);
     } else {
         ft_dprintf(STDERR_FILENO, "ptr not found %p\n", ptr);
+        errno = EINVAL;
     }
 }
