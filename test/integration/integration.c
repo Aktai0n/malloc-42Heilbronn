@@ -33,6 +33,7 @@ void test_with_gnl(const char* file) {
         str = get_next_line(fd);
         check_heap();
     }
+    lines[i + 1] = NULL;
     for (i = 0; lines[i] != NULL; ++i) {
         ft_printf("%u: %s", i + 1, lines[i]);
         free(lines[i]);

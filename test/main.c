@@ -15,6 +15,31 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <stdlib.h>
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
+static char* get_abs_path_(const char* path) {
+    char buf[PATH_MAX] = {0};
+    if (getcwd(buf, sizeof(buf)) == NULL) {
+        return NULL;
+    }
+    if (strncmp("./", path, 2) == 0) {
+        path = path + 2;
+    }
+    size_t total_len = strlen(path) + strlen(buf);
+    char* full_path = malloc(total_len + 1);
+    if (full_path == NULL) {
+        return NULL;
+    }
+    full_path[total_len] = '\0';
+    strcat(full_path, buf);
+    strcat(full_path, "/");
+    strcat(full_path, path);
+    return full_path;
+}
 
 static void execute_specific_tests_(int argc, char** argv, struct s_heap* heap) {
 
@@ -29,9 +54,10 @@ static void execute_specific_tests_(int argc, char** argv, struct s_heap* heap) 
             test_medium_page(heap);
             test_medium_block(heap);
         } else if (strcmp(str, "i") == 0 || strcmp(str, "integration") == 0) {
-            const char* file = "/home/skienzle/Coding/42Heilbronn/malloc-42Heilbronn/test/integration/test_dracula.txt";
+            char* file = get_abs_path_("./test/integration/test_dracula.txt");
             // const char* file = "/Users/skienzle/42Projects/private_github_repos/malloc-42Heilbronn/test/integration/test_dracula.txt";
             test_with_gnl(file);
+            free(file);
         }
     }
 }
