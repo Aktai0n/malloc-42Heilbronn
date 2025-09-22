@@ -52,7 +52,7 @@ TEST_SRC = $(shell find $(TEST_DIR) -type f -name "*.c")
 
 
 # -------------------- public rules ---------------------
-all: test
+all: $(NAME)
 
 $(NAME): $(OBJ) | libs
 	$(CC) -shared $(CFLAGS) $(LIBFT) $(OBJ) -o $@

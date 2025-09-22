@@ -17,15 +17,6 @@ struct s_heap g_heap = { 0 };
 REGISTER_CONSTRUCTOR(ft_malloc_constructor);
 REGISTER_DESTRUCTOR(ft_malloc_destructor);
 
-#include <signal.h>
-#include <stdlib.h>
-
-void handle_sigsegv(int signo) {
-    show_alloc_mem();
-    // ft_printf("Segmentation fault\n");
-    exit(1);
-}
-
 static void ft_malloc_constructor(void) {
 
     // ft_printf("constructor called\n");
@@ -46,7 +37,6 @@ static void ft_malloc_constructor(void) {
         g_heap.medium_pages = NULL;
     }
     g_heap.large_pages = NULL;
-    // signal(SIGSEGV, handle_sigsegv);
 }
 
 static void ft_malloc_destructor(void) {
@@ -66,5 +56,4 @@ static void ft_malloc_destructor(void) {
         destroy_large_page(page, &g_heap.large_pages);
         page = next;
     }
-    // ft_printf("destructor called\n");
 }
