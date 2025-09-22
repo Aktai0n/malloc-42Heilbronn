@@ -1,5 +1,7 @@
 
-#if 1
+// #define TEST_SWITCH 0
+
+#ifndef TEST_SWITCH
 
 #include "defines.h"
 
@@ -76,7 +78,7 @@ int main(int argc, char** argv) {
     ft_putstr_color(BOLD_INTENSE_YELLOW_COLOR, "------------ Start Unit Tests ------------\n\n");
     test_small_page(&heap);
     test_small_block(&heap);
-    show_alloc_mem_ex();
+    // show_alloc_mem_ex();
     test_medium_page(&heap);
     test_medium_block(&heap);
     test_large_page(&heap);
@@ -84,7 +86,8 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-#else
+
+#elif TEST_SWITCH == 0
 
 #include <stdlib.h>
 
@@ -98,6 +101,137 @@ int      main(void)
     {
         i++;
     } 
+    return (0); 
+}
+
+#elif TEST_SWITCH == 1
+
+#include <stdlib.h>
+
+int      main(void)
+{
+    int   i;
+    char  *addr;
+
+    i = 0;
+    while (i < 1024)
+    {
+        addr = (char*)malloc(1024);
+        addr[0] = 42;
+        i++;
+    }
+    return (0);
+}
+
+#elif TEST_SWITCH == 2
+
+#include <stdlib.h>
+
+int main(void)
+{
+    int   i;
+    char  *addr;
+
+    i = 0;
+    while (i < 1024) 
+    {
+        addr = (char*)malloc(1024);
+        addr[0] = 42;
+        free(addr); 
+        i++; 
+    }
+    return (0);
+}
+
+#elif TEST_SWITCH == 3
+
+#include <strings.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define M (1024 * 1024)
+
+void print(char *s)
+{
+    write(1, s, strlen(s));
+}
+
+int main()
+{ char *addr1; char *addr3;
+
+    addr1 = (char*)malloc(16*M);
+    strcpy(addr1, "Bonjour\n");
+    print(addr1);
+    addr3 = (char*)realloc(addr1, 128*M);
+    addr3[127*M] = 42;
+    print(addr3);
+    return (0);
+}
+
+#elif TEST_SWITCH == 4
+
+#include <strings.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define M (1024 * 1024)
+
+void print(char *s)
+{
+    write(1, s, strlen(s));
+}
+
+int     main()
+{
+    char *addr1;
+    char *addr2;
+    char *addr3;
+
+    addr1 = (char*)malloc(16*M);
+    strcpy(addr1, "Bonjour\n");
+    print(addr1);
+    addr2 = (char*)malloc(16*M);
+    addr3 = (char*)realloc(addr1, 128*M);
+    addr3[127*M] = 42;
+    print(addr3);
+    return (0);
+}
+
+#elif TEST_SWITCH == 5
+
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+
+void print(char *s)
+{
+    write(1, s, strlen(s));
+}
+
+int main()
+{
+    char *addr;
+
+    addr = malloc(16);
+    free(NULL);
+    free((void *)addr + 5);
+    if (realloc((void *)addr + 5, 10) == NULL)
+        print("Bonjour\n");
+}
+
+#elif TEST_SWITCH == 6
+
+#include <stdlib.h>
+#include "inc/ft_malloc.h"
+
+int main()
+{
+    malloc(1024);
+    malloc(1024 * 32);
+    malloc(1024 * 1024);
+    malloc(1024 * 1024 * 16);
+    malloc(1024 * 1024 * 128);
+    show_alloc_mem(); 
     return (0); 
 }
 
