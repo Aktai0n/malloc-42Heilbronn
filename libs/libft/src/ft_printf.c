@@ -30,7 +30,7 @@ static ssize_t resolve_format_specifiers(
     case '%':
         return write(fd, "%", 1);
     case 'b':
-        return ft_putbyte_hex((uint8_t)va_arg(args, int));
+        return ft_putbyte_hex_fd((uint8_t)va_arg(args, int), fd);
     case 'c':
         temp = va_arg(args, int);
         return write(fd, &temp, 1);
