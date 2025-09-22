@@ -17,7 +17,7 @@ t_small_block* allocate_small_block(
     const size_t size,
     t_small_block* list
 ) {
-    t_small_block* block = find_small_block(list, size);
+    t_small_block* block = find_free_small_block(list, size);
     if (block == NULL) {
         return NULL;
     }

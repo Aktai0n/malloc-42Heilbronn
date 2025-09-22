@@ -20,7 +20,20 @@ t_small_block* get_prev_small_block(t_small_block* block) {
     );
 }
 
-t_small_block* find_small_block(
+t_small_block* find_in_small_block_list(const void* ptr, t_small_block* list) {
+    while (list != NULL) {
+        const void* data = get_small_block_data(list);
+        if (data == ptr) {
+            return list;
+        } else if (ft_is_in_region(ptr, data, get_block_size(list->curr))) {
+            return NULL;
+        }
+        list = get_next_small_block(list);
+    }
+    return NULL;
+}
+
+t_small_block* find_free_small_block(
     t_small_block* list,
     const size_t size
 ) {

@@ -98,10 +98,17 @@ t_small_block* reallocate_small_block(
 /// @param size The smallest size the block should have
 /// @return A memory block that has at least size bytes or
 ///         NULL if no block is found in the list
-t_small_block* find_small_block(
+t_small_block* find_free_small_block(
     t_small_block* list,
     const size_t size
 );
+
+/// @brief Looks for the memory block that ptr belongs to
+/// @param ptr The pointer to be associated to a memory block
+/// @param list A list of memory blocks in which to look for ptr
+/// @return The memory block associated to ptr or
+///         NULL if ptr wasn't found
+t_small_block* find_in_small_block_list(const void* ptr, t_small_block* list);
 
 /// @brief Returns the next block in memory on the current memory page
 /// @param block A pointer to the current block of memory

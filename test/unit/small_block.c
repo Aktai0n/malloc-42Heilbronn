@@ -41,12 +41,12 @@ test_small_block_list_(t_small_block** blocks) {
         prev = block;
     }
     t_small_block* block_list = block_arr;
-    t_small_block* block = find_small_block(block_list, sizeof(t_small_block));
-    if (find_small_block(block_list, 0) == NULL) {
+    t_small_block* block = find_free_small_block(block_list, sizeof(t_small_block));
+    if (find_free_small_block(block_list, 0) == NULL) {
         return "Size 0 not found in block list";
     } else if (block == NULL || get_block_size(block->curr) < sizeof(*block)) {
         return "Block with sizeof t_small_block not found in list";
-    } else if (find_small_block(block_list, TINY_PAGE_SIZE) != NULL) {
+    } else if (find_free_small_block(block_list, TINY_PAGE_SIZE) != NULL) {
         return "Too big block found in block list";
     }
 
