@@ -17,7 +17,7 @@ LIBMALLOC := -L$(LIBMALLOC_DIR) -lft_malloc
 
 # compiler config
 CC := cc
-CFLAGS = -std=gnu2x \
+CFLAGS = -std=c11 \
          -Wall -Wextra -Wconversion \
          -pedantic  \
          -pthread -Wno-gnu-binary-literal -fvisibility=hidden # -fsanitize=address #-Werror 
@@ -56,6 +56,8 @@ all: $(NAME)
 
 $(NAME): $(OBJ) | libs
 	$(CC) -shared $(CFLAGS) $(LIBFT) $(OBJ) -o $@
+# TODO: Check on linux if -x exists. Otherwise use with --strip-unneeded
+	strip -x $(NAME)
 	$(LN) $(LNFLAGS) $@ $(LINK_NAME)
 
 $(LINK_NAME): $(NAME)
@@ -70,6 +72,9 @@ fclean: | fclean_libs
 	$(RM) $(TESTER_NAME)
 
 re: fclean all
+
+bonus: CFLAGS += -DFT_MALLOC_BONUS=1
+bonus: re
 
 test: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS))
 test: CFLAGS += -g
