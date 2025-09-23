@@ -119,6 +119,7 @@ void check_large(t_large_page* page) {
 void check_heap(void) {
     struct s_heap* heap = &g_heap;
 
+    FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
     for (t_small_page* page = heap->small_pages; page != NULL; page = page->next) {
         check_small(page);
     }
@@ -128,4 +129,5 @@ void check_heap(void) {
     for (t_large_page* page = heap->large_pages; page != NULL; page = page->next) {
         check_large(page);
     }
+    FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
 }

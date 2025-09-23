@@ -125,7 +125,9 @@ void show_alloc_mem_ex(void) {
     struct s_heap* heap = &g_heap;
     int fd = STDOUT_FILENO;
 
+    FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
     print_small_(fd, heap->small_pages);
     print_medium_(fd, heap->medium_pages);
     print_large_(fd, heap->large_pages);
+    FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
 }
