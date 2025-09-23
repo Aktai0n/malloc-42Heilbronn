@@ -43,12 +43,10 @@
 
 #ifndef TINY_PAGE_SIZE
 #define TINY_PAGE_SIZE ((size_t)getpagesize() * 16UL)
-// #define TINY_PAGE_SIZE ((size_t)getpagesize())
 #endif
 
 #ifndef SMALL_PAGE_SIZE
-#define SMALL_PAGE_SIZE ((size_t)getpagesize() * 128UL)
-// #define SMALL_PAGE_SIZE ((size_t)getpagesize() * 16UL)
+#define SMALL_PAGE_SIZE ((size_t)getpagesize() * 256UL)
 #endif
 
 #ifndef TINY_ALLOC_BLOCK_SIZE
