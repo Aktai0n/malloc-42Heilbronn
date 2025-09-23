@@ -27,23 +27,27 @@ static const t_small_page* get_next_small_page_(
     return next;
 }
 
-static void print_small_(const t_small_page* pages) {
+static size_t print_small_(const t_small_page* pages) {
+    size_t total = 0;
     const t_small_page* page = get_next_small_page_(NULL, pages);
     while (page != NULL) {
         ft_printf("TINY : %p\n", page);
         t_small_block* block = page->block_list;
         while (block != NULL) {
             if (is_allocated(block->curr)) {
+                size_t size = get_block_size(block->curr);
                 print_block_(
                     get_small_block_data(block),
                     get_small_block_data_end(block),
-                    get_block_size(block->curr)
+                    size
                 );
+                total += size;
             }
             block = get_next_small_block(block);
         }
         page = get_next_small_page_(page, pages);
     }
+    return total;
 }
 
 static const t_medium_page* get_next_medium_page_(
@@ -62,21 +66,25 @@ static const t_medium_page* get_next_medium_page_(
     return next;
 }
 
-static void print_medium_(const t_medium_page* pages) {
+static size_t print_medium_(const t_medium_page* pages) {
+    size_t total = 0;
     const t_medium_page* page = get_next_medium_page_(NULL, pages);
     while (page != NULL) {
         ft_printf("SMALL: %p\n", page);
         t_medium_block* block = page->allocated_list;
         while (block != NULL) {
+            size_t size = get_block_size(block->curr);
             print_block_(
                 get_medium_block_data(block),
                 get_medium_block_data_end(block),
-                get_block_size(block->curr)
+                size
             );
+            total += size;
             block = block->next_ptr;
         }
         page = get_next_medium_page_(page, pages);
     }
+    return total;
 }
 
 static t_large_page* get_next_large_page_(
@@ -95,22 +103,28 @@ static t_large_page* get_next_large_page_(
     return next;
 }
 
-static void print_large_(t_large_page* pages) {
+static size_t print_large_(t_large_page* pages) {
+    size_t total = 0;
     t_large_page* page = get_next_large_page_(NULL, pages);
     while (page != NULL) {
         ft_printf("LARGE: %p\n", page);
+        size_t size = get_large_page_data_size(page);
         print_block_(
             get_large_page_data(page),
             get_large_page_end(page),
-            get_large_page_data_size(page)
+            size
         );
+        total += size;
         page = get_next_large_page_(page, pages);
     }
+    return total;
 }
 
 void show_alloc_mem(void) {
     struct s_heap* heap = &g_heap;
-    print_small_(heap->small_pages);
-    print_medium_(heap->medium_pages);
-    print_large_(heap->large_pages);
+    size_t total = 0;
+    total += print_small_(heap->small_pages);
+    total += print_medium_(heap->medium_pages);
+    total += print_large_(heap->large_pages);
+    ft_printf("Total: %u bytes\n", total);
 }
