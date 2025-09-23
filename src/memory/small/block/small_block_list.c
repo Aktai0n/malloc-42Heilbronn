@@ -25,8 +25,6 @@ t_small_block* find_in_small_block_list(const void* ptr, t_small_block* list) {
         const void* data = get_small_block_data(list);
         if (data == ptr) {
             return list;
-        } else if (ft_is_in_region(ptr, data, get_block_size(list->curr))) {
-            return NULL;
         }
         list = get_next_small_block(list);
     }

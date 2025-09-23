@@ -12,23 +12,12 @@
 #include "large/large.h"
 #include "large/page/large_page.h"
 
-
-
-
-
 bool release_memory(void* ptr) {
-    if (!PTR_IS_ALIGNED(ptr, FT_MALLOC_ALIGNMENT) &&
-        !PTR_IS_ALIGNED(ptr, (size_t)getpagesize())) {
-        errno = EFAULT;
-        return false;
-    }
     t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
     if (small_page != NULL) {
-        // TODO: Should I implement that everywhere or only rely on the ptr being properly aligned?
         t_small_block* block = find_in_small_block_list(ptr, small_page->block_list);
         if (block == NULL) {
-            // malformed ptr given
-            errno = EFAULT;
+            errno = EINVAL;
             return false;
         }
         return deallocate_small(
@@ -39,8 +28,13 @@ bool release_memory(void* ptr) {
     }
     t_medium_page* medium_page = find_in_medium_page_list(ptr, g_heap.medium_pages);
     if (medium_page != NULL) {
+        t_medium_block* block = find_in_medium_block_list(ptr, medium_page->allocated_list);
+        if (block == NULL) {
+            errno = EINVAL;
+            return false;
+        }
         return deallocate_medium(
-            get_medium_block(ptr),
+            block,
             medium_page,
             &g_heap.medium_pages
         );

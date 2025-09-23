@@ -35,7 +35,9 @@ t_large_page* find_in_large_page_list(
     t_large_page* list
 ) {
     while (list != NULL) {
-        if (ft_is_in_region(ptr, list, list->size)) {
+        const void* data = get_large_page_data(list);
+        // if (ft_is_in_region(ptr, list, list->size)) {
+        if (data == ptr) {
             return list;
         }
         list = list->next;

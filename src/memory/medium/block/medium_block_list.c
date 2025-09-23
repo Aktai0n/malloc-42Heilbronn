@@ -19,13 +19,23 @@ t_medium_block* get_prev_medium_block(t_medium_block* block) {
     );
 }
 
-t_medium_block* find_medium_block(
+t_medium_block* find_in_medium_block_list(const void* ptr, t_medium_block* list) {
+    while (list != NULL) {
+        const void* data = get_medium_block_data(list);
+        if (data == ptr) {
+            return list;
+        }
+        list = list->next_ptr;
+    }
+    return NULL;
+}
+
+t_medium_block* find_free_medium_block(
     t_medium_block* list,
     const size_t size
 ) {
     t_medium_block* best_fit = NULL;
-    while (list != NULL)
-    {
+    while (list != NULL) {
         const size_t block_size = get_block_size(list->curr);
         if (block_size == size) {
             return list;

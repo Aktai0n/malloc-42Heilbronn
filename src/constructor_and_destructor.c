@@ -6,7 +6,6 @@
 #include "memory/medium/page/medium_page.h"
 #include "memory/large/page/large_page.h"
 #include "defines.h"
-
 #include "libft.h"
 
 // initialize a static mutex
@@ -18,8 +17,6 @@ REGISTER_CONSTRUCTOR(ft_malloc_constructor);
 REGISTER_DESTRUCTOR(ft_malloc_destructor);
 
 static void ft_malloc_constructor(void) {
-
-    // ft_printf("constructor called\n");
     t_small_page* small_page = create_small_page(
         TINY_PAGE_SIZE,
         0,
@@ -40,7 +37,6 @@ static void ft_malloc_constructor(void) {
 }
 
 static void ft_malloc_destructor(void) {
-    // TODO: Check if pages are still in use
     for (t_small_page* page = g_heap.small_pages; page != NULL;) {
         t_small_page* next = page->next;
         destroy_small_page(page, &g_heap.small_pages);

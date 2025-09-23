@@ -92,6 +92,13 @@ t_small_block* reallocate_small_block(
 
 // ---------------------- small_block_list.c -----------------------
 
+/// @brief Looks for the memory block that ptr belongs to
+/// @param ptr The pointer to be associated to a memory block
+/// @param list A list of memory blocks in which to look for ptr
+/// @return The memory block associated to ptr or
+///         NULL if ptr wasn't found
+t_small_block* find_in_small_block_list(const void* ptr, t_small_block* list);
+
 /// @brief Finds a free block of memory to allocate
 ///        using a first fit approach
 /// @param list The list of blocks to search in
@@ -102,13 +109,6 @@ t_small_block* find_free_small_block(
     t_small_block* list,
     const size_t size
 );
-
-/// @brief Looks for the memory block that ptr belongs to
-/// @param ptr The pointer to be associated to a memory block
-/// @param list A list of memory blocks in which to look for ptr
-/// @return The memory block associated to ptr or
-///         NULL if ptr wasn't found
-t_small_block* find_in_small_block_list(const void* ptr, t_small_block* list);
 
 /// @brief Returns the next block in memory on the current memory page
 /// @param block A pointer to the current block of memory

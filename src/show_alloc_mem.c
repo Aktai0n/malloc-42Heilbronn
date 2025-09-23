@@ -137,8 +137,10 @@ void show_alloc_mem(void) {
     int fd = STDOUT_FILENO;
     size_t total = 0;
 
+    FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
     total += print_small_(fd, heap->small_pages);
     total += print_medium_(fd, heap->medium_pages);
     total += print_large_(fd, heap->large_pages);
+    FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
     ft_dprintf(fd, "Total: %u bytes\n", total);
 }

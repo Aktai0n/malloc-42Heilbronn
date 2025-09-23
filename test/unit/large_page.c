@@ -114,12 +114,12 @@ test_find_in_large_page_list_(t_large_page** page_list) {
     t_large_page_end* valid_end = get_large_page_end(find_valid);
     const void* invalid_end = (void*)((size_t)find_valid + find_valid->size);
 
-    if (find_in_large_page_list((void*)find_valid, *page_list) != find_valid) {
-        return "page pointer not found";
+    if (find_in_large_page_list((void*)find_valid, *page_list) != NULL) {
+        return "page pointer falsely found";
     } else if (find_in_large_page_list(valid_data, *page_list) != find_valid) {
         return "data pointer not found";
-    } else if (find_in_large_page_list((void*)valid_end, *page_list) != find_valid) {
-        return "end pointer not found";
+    } else if (find_in_large_page_list((void*)valid_end, *page_list) != NULL) {
+        return "page end pointer falsely found";
     } else if (find_in_large_page_list(NULL, *page_list) != NULL) {
         return "NULL found in page list";
     } else if (find_in_large_page_list(invalid_end, *page_list) == find_valid) {

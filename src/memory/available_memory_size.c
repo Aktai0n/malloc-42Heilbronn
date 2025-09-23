@@ -10,12 +10,20 @@
 size_t available_memory_size(void* ptr, struct s_heap* heap) {
     t_small_page* small_page = find_in_small_page_list(ptr, heap->small_pages);
     if (small_page != NULL) {
-        t_small_block* small_block = get_small_block(ptr);
+        t_small_block* small_block = find_in_small_block_list(ptr, small_page->block_list);
+        if (small_block == NULL) {
+            errno = EINVAL;
+            return 0;
+        }
         return get_block_size(small_block->curr);
     }
     t_medium_page* medium_page = find_in_medium_page_list(ptr, heap->medium_pages);
     if (medium_page != NULL) {
-        t_medium_block* medium_block = get_medium_block(ptr);
+        t_medium_block* medium_block = find_in_medium_block_list(ptr, medium_page->allocated_list);
+        if (medium_block == NULL) {
+            errno = EINVAL;
+            return 0;
+        }
         return get_block_size(medium_block->curr);
     }
     t_large_page* large_page = find_in_large_page_list(ptr, heap->large_pages);

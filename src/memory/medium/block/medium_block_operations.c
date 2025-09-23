@@ -17,7 +17,7 @@ t_medium_block* allocate_medium_block(
     t_medium_block** free_list,
     t_medium_block** allocated_list
 ) {
-    t_medium_block* block = find_medium_block(*free_list, size);
+    t_medium_block* block = find_free_medium_block(*free_list, size);
     if (block == NULL) {
         return NULL;
     }
