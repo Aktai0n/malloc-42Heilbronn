@@ -5,6 +5,8 @@ ifeq ($(HOSTTYPE),)
 HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
+PLATFORM := $(shell uname -s)
+
 NAME := libft_malloc_$(HOSTTYPE).so
 LINK_NAME := libft_malloc.so
 TESTER_NAME = tester
@@ -17,10 +19,18 @@ LIBMALLOC := -L$(LIBMALLOC_DIR) -lft_malloc
 
 # compiler config
 CC := cc
-CFLAGS = -std=c11 \
+CFLAGS = -std=c2x \
          -Wall -Wextra -Wconversion \
          -pedantic  \
-         -pthread -Wno-gnu-binary-literal -fvisibility=hidden # -fsanitize=address #-Werror 
+         -pthread -fvisibility=hidden # -fsanitize=address #-Werror
+ifeq ($(PLATFORM),Linux)
+# needed for `getpagesize()` in glibc
+    CFLAGS += -D_DEFAULT_SOURCE
+else ifeq ($(PLATFORM),Darwin)
+# silence warnings about binary literals (they were added in C23)
+    CFLAGS += -Wno-gnu-binary-literal
+endif
+
 INCLUDES := -Iinc -I$(LIBFT_DIR)/inc -Isrc/utils/
 
 # linker config
