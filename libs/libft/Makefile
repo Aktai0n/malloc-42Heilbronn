@@ -3,6 +3,7 @@
 
 NAME := libft.a
 
+PLATFORM := $(shell uname -s)
 
 # compiler config
 CC := cc
@@ -10,9 +11,9 @@ CFLAGS = -std=c99 -O2 \
          -Wall -Wextra -Wconversion -Werror \
          -pedantic  \
          -fPIC
-# ifeq ($(PLATFORM),Darwin)
-    # CFLAGS += -fvisibility=hidden
-# endif
+ifeq ($(PLATFORM),Darwin)
+    CFLAGS += -fvisibility=hidden
+endif
 INC_DIR := inc
 
 # archive (library) config

@@ -20,9 +20,9 @@ LIBMALLOC := -L$(LIBMALLOC_DIR) -lft_malloc
 # compiler config
 CC := cc
 CFLAGS = -std=c2x \
-         -Wall -Wextra -Wconversion \
-         -pedantic  \
-         -pthread -fvisibility=hidden # -fsanitize=address #-Werror
+         -Wall -Wextra -Wconversion -pedantic \
+         -pthread \
+         -fvisibility=hidden
 ifeq ($(PLATFORM),Linux)
 # needed for `getpagesize()` in glibc
     CFLAGS += -D_DEFAULT_SOURCE
@@ -51,10 +51,7 @@ MKDIR := mkdir -p
 
 #strip config
 STRIP_CMD := strip -x $(NAME)
-# ifeq ($(PLATFORM),Linux)
-#     STRIP_CMD := strip --strip-unneeded $(NAME)
-# else ifeq ($(PLATFORM),Darwin)
-# endif
+
 
 
 # -------------------- dependencies ---------------------
@@ -132,5 +129,5 @@ $(ODIR):
 	$(MKDIR) $(patsubst $(SDIR)/%, $(ODIR)/% , $(shell find $(SDIR)/ -type d))
 
 $(ODIR)/%.o: $(SDIR)/%.c | $(ODIR) libs
-	$(CC) $(CFLAGS) -fPIC -c $< $(LIBFT) -o $@ $(INCLUDES)
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@ $(INCLUDES)
 # PIC = Position Independent Code
