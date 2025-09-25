@@ -37,6 +37,7 @@ static void ft_malloc_constructor(void) {
 }
 
 static void ft_malloc_destructor(void) {
+    // show_alloc_mem();
     for (t_small_page* page = g_heap.small_pages; page != NULL;) {
         t_small_page* next = page->next;
         destroy_small_page(page, &g_heap.small_pages);

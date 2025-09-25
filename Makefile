@@ -51,6 +51,11 @@ MKDIR := mkdir -p
 
 #strip config
 STRIP_CMD := strip -x $(NAME)
+# ifeq ($(PLATFORM),Linux)
+#     STRIP_CMD := strip --strip-unneeded $(NAME)
+# else ifeq ($(PLATFORM),Darwin)
+# endif
+
 
 # -------------------- dependencies ---------------------
 
@@ -68,7 +73,7 @@ TEST_SRC = $(shell find $(TEST_DIR) -type f -name "*.c")
 all: $(NAME)
 
 $(NAME): $(OBJ) | libs
-	$(CC) -shared $(CFLAGS) $(LIBFT) $(OBJ) -o $@
+	$(CC) -shared $(CFLAGS) $(OBJ) $(LIBFT) -o $@
 # TODO: Check on linux if -x exists. Otherwise use with --strip-unneeded
 	$(STRIP_CMD)
 	$(LN) $(LNFLAGS) $@ $(LINK_NAME)
@@ -127,5 +132,5 @@ $(ODIR):
 	$(MKDIR) $(patsubst $(SDIR)/%, $(ODIR)/% , $(shell find $(SDIR)/ -type d))
 
 $(ODIR)/%.o: $(SDIR)/%.c | $(ODIR) libs
-	$(CC) $(CFLAGS) -fPIC -c $< -o $@ $(INCLUDES)
+	$(CC) $(CFLAGS) -fPIC -c $< $(LIBFT) -o $@ $(INCLUDES)
 # PIC = Position Independent Code
