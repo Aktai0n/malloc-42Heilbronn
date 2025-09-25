@@ -109,11 +109,6 @@ test_medium_block_list_(t_medium_block** unused1, t_medium_block** unused2) {
     return NULL;
 }
 
-static inline t_medium_block*
-get_first_medium_block_(t_medium_block* first, t_medium_block* second) {
-    return first < second ? first : second;
-}
-
 static t_medium_block*
 find_medium_block_in_list_(t_medium_block* list, t_medium_block* to_find) {
     for (;list != NULL; list = list->next_ptr) {
@@ -374,7 +369,7 @@ execute_test_(
 }
 
 void test_medium_block(struct s_heap* heap) {
-    t_medium_page** pages = &g_heap.medium_pages;
+    (void)heap;
     t_medium_page* page = NULL;
     page = create_medium_page(SMALL_PAGE_SIZE, 0, &page);
     if (page == NULL) {

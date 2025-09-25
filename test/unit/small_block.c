@@ -286,7 +286,7 @@ execute_test_(
 }
 
 void test_small_block(struct s_heap* heap) {
-    // t_small_block** blocks = &heap->small_pages->block_list;
+    (void)heap;
     t_small_page* page = NULL;
     page = create_small_page(TINY_PAGE_SIZE, 0, &page);
     if (page == NULL) {
