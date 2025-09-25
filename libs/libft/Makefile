@@ -11,10 +11,23 @@ CFLAGS = -std=c99 -O2 \
          -Wall -Wextra -Wconversion -Werror \
          -pedantic  \
          -fPIC
-ifeq ($(PLATFORM),Darwin)
+INC_DIR := inc
+
+# toolchain detection
+PREDEFS := $(shell echo | $(CC) -dM -E -)
+ifeq ($(findstring __clang__,$(PREDEFS)),__clang__)
+    TOOLCHAIN := clang
+else ifeq ($(findstring __GNUC__,$(PREDEFS)),__GNUC__)
+    TOOLCHAIN := gnuc
+else
+    TOOLCHAIN := 
+endif
+
+
+ifeq ($(TOOLCHAIN), clang)
     CFLAGS += -fvisibility=hidden
 endif
-INC_DIR := inc
+
 
 # archive (library) config
 AR := ar

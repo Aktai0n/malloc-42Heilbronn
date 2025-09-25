@@ -23,10 +23,24 @@ CFLAGS = -std=c2x \
          -Wall -Wextra -Wconversion -pedantic \
          -pthread \
          -fvisibility=hidden
+
+# toolchain detection
+PREDEFS := $(shell echo | $(CC) -dM -E -)
+ifeq ($(findstring __clang__,$(PREDEFS)),__clang__)
+    TOOLCHAIN := clang
+else ifeq ($(findstring __GNUC__,$(PREDEFS)),__GNUC__)
+    TOOLCHAIN := gnuc
+else
+    TOOLCHAIN := 
+endif
+
+
+
 ifeq ($(PLATFORM),Linux)
-# needed for `getpagesize()` in glibc
+# needed for `getpagesize()` on linux
     CFLAGS += -D_DEFAULT_SOURCE
-else ifeq ($(PLATFORM),Darwin)
+endif
+ifeq ($(TOOLCHAIN),clang)
 # silence warnings about binary literals (they were added in C23)
     CFLAGS += -Wno-gnu-binary-literal
 endif
