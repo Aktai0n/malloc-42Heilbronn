@@ -96,10 +96,6 @@ test: STRIP_CMD =
 test: bonus
 	$(CC) $(CFLAGS) $(INCLUDES)  $(TEST_SRC) -o $(TESTER_NAME) $(LDFLAGS)
 
-# TODO: Check on MacOS whether loading the libaries dynamically still works
-# @export DYLD_LIBRARY_PATH=.:$(DYLD_LIBRARY_PATH)
-# @export DYLD_INSERT_LIBRARIES="$(LINK_NAME)"
-# @export DYLD_FORCE_FLAT_NAMESPACE=1
 run: test
 	@./$(TESTER_NAME)
 
