@@ -1,21 +1,18 @@
-
 #include <stddef.h>
 #include <sys/mman.h>
 #include <errno.h>
-#include <pthread.h>
 
-#include "ft_malloc.h"
+
+#include "ft_malloc_internal.h"
 #include "defines.h"
 #include "memory/memory.h"
-
-// initialize a static mutex
-pthread_mutex_t g_alloc_mutex = PTHREAD_MUTEX_INITIALIZER;
-struct s_heap g_heap = { 0 };
 
 void* malloc(size_t size) {
     if (size == 0) {
         return NULL;
     }
+    FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
     void* ptr = allocate_memory(size, false);
+    FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
     return ptr;
 }

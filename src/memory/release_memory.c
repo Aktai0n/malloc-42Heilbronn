@@ -1,40 +1,48 @@
-
-#include <stdbool.h>
 #include <errno.h>
 
 #include "memory.h"
-#include "alloc_block/alloc_block.h"
-#include "memory_page/memory_page.h"
-
-static bool release_alloc_block_(t_memory_page* page, t_alloc_block* block) {
-    // delete the block from the allocated list and add it to the free list
-    if (delete_from_alloc_list(&page->allocated_list, block) == NULL) {
-
-        return false;
-    }
-    set_alloc_block_flag(block, IS_ALLOCATED_FLAG, false);
-    add_to_alloc_list(&page->free_list, block);
-
-    // try to merge this block with the next in memory (avoid fragmentation)
-    merge_alloc_block(block, &page->free_list);
-    return true;
-}
+#include "defines.h"
+#include "ft_malloc_internal.h"
+#include "small/small.h"
+#include "small/page/small_page.h"
+#include "small/block/small_block.h"
+#include "medium/medium.h"
+#include "medium/page/medium_page.h"
+#include "medium/block/medium_block.h"
+#include "large/large.h"
+#include "large/page/large_page.h"
 
 bool release_memory(void* ptr) {
-    t_alloc_block* block = get_alloc_block(ptr);
-    t_memory_page* page = find_memory_page(block);
-    if (page == NULL) {
-        errno = EINVAL;
-        return false;
-    } else if (!is_allocated(block)) {
-        // double free
-        errno = EACCES;
-        return false;
+    t_small_page* small_page = find_in_small_page_list(ptr, g_heap.small_pages);
+    if (small_page != NULL) {
+        t_small_block* block = find_in_small_block_list(ptr, small_page->block_list);
+        if (block == NULL) {
+            errno = EINVAL;
+            return false;
+        }
+        return deallocate_small(
+            block,
+            small_page,
+            &g_heap.small_pages
+        );
     }
-
-    if (page->next != NULL &&
-        (page->allocated_list == NULL || page->allocated_list->next == NULL)) {
-        return reclaim_memory_page(page);
+    t_medium_page* medium_page = find_in_medium_page_list(ptr, g_heap.medium_pages);
+    if (medium_page != NULL) {
+        t_medium_block* block = find_in_medium_block_list(ptr, medium_page->allocated_list);
+        if (block == NULL) {
+            errno = EINVAL;
+            return false;
+        }
+        return deallocate_medium(
+            block,
+            medium_page,
+            &g_heap.medium_pages
+        );
     }
-    return reclaim_alloc_block(block, &page->free_list, &page->allocated_list);
+    t_large_page* large_page = find_in_large_page_list(ptr, g_heap.large_pages);
+    if (large_page != NULL) {
+        return deallocate_large(large_page, &g_heap.large_pages);
+    }
+    errno = EINVAL;
+    return false;
 }

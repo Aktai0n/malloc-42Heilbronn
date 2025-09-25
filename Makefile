@@ -5,6 +5,8 @@ ifeq ($(HOSTTYPE),)
 HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
+PLATFORM := $(shell uname -s)
+
 NAME := libft_malloc_$(HOSTTYPE).so
 LINK_NAME := libft_malloc.so
 TESTER_NAME = tester
@@ -12,15 +14,28 @@ TESTER_NAME = tester
 # libs config
 LIBFT_DIR := libs/libft
 LIBFT := -L$(LIBFT_DIR) -lft
-LIBMALLOC := -L. -lft_malloc
+LIBMALLOC_DIR := .
+LIBMALLOC := -L$(LIBMALLOC_DIR) -lft_malloc
 
 # compiler config
 CC := cc
-CFLAGS = -std=gnu2x \
-         -Wall -Wextra -Wconversion \
-         -pedantic  \
-         -pthread -Wno-gnu-binary-literal # -fsanitize=address #-Werror 
-INCLUDES := -Iinc -I$(LIBFT_DIR)/inc
+CFLAGS = -std=c2x \
+         -Wall -Wextra -Wconversion -pedantic \
+         -pthread \
+         -fvisibility=hidden
+ifeq ($(PLATFORM),Linux)
+# needed for `getpagesize()` in glibc
+    CFLAGS += -D_DEFAULT_SOURCE
+else ifeq ($(PLATFORM),Darwin)
+# silence warnings about binary literals (they were added in C23)
+    CFLAGS += -Wno-gnu-binary-literal
+endif
+
+INCLUDES := -Iinc -I$(LIBFT_DIR)/inc -Isrc/utils/
+
+# linker config
+LDFLAGS = $(LIBMALLOC) $(LIBFT) \
+           -Wl,-rpath,$(PWD)
 
 # archive (library) config
 AR := ar
@@ -33,6 +48,11 @@ LNFLAGS = -sf
 # utils config
 RM := rm -rf
 MKDIR := mkdir -p
+
+#strip config
+STRIP_CMD := strip -x $(NAME)
+
+
 
 # -------------------- dependencies ---------------------
 
@@ -47,10 +67,12 @@ TEST_SRC = $(shell find $(TEST_DIR) -type f -name "*.c")
 
 
 # -------------------- public rules ---------------------
-all: test
+all: $(NAME)
 
 $(NAME): $(OBJ) | libs
-	$(CC) $(CFLAGS) $(LIBFT) -shared $(OBJ) -o $@
+	$(CC) -shared $(CFLAGS) $(OBJ) $(LIBFT) -o $@
+# TODO: Check on linux if -x exists. Otherwise use with --strip-unneeded
+	$(STRIP_CMD)
 	$(LN) $(LNFLAGS) $@ $(LINK_NAME)
 
 $(LINK_NAME): $(NAME)
@@ -66,8 +88,13 @@ fclean: | fclean_libs
 
 re: fclean all
 
-test: $(NAME)
-	$(CC) $(CFLAGS) $(INCLUDES) $(TEST_SRC) $(LIBFT) $(LIBMALLOC) -Wl,-rpath . -o $(TESTER_NAME)
+bonus: CFLAGS += -DFT_MALLOC_BONUS=1
+bonus: all
+
+test: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS)) -DFT_MALLOC_BONUS=1
+test: STRIP_CMD = 
+test: bonus
+	$(CC) $(CFLAGS) $(INCLUDES)  $(TEST_SRC) -o $(TESTER_NAME) $(LDFLAGS)
 
 # TODO: Check on MacOS whether loading the libaries dynamically still works
 # @export DYLD_LIBRARY_PATH=.:$(DYLD_LIBRARY_PATH)
@@ -76,10 +103,11 @@ test: $(NAME)
 run: test
 	@./$(TESTER_NAME)
 
+debug: CFLAGS := $(filter-out -fvisibility=hidden, $(CFLAGS))
 debug: CFLAGS += -g
-debug: re test
+debug: test
 
-.PHONY: all clean fclean re test run
+.PHONY: all clean fclean re test run debug
 
 # -------------------- libs rules -----------------------
 

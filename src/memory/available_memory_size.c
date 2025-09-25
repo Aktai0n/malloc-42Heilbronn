@@ -1,16 +1,35 @@
-
 #include <errno.h>
 
-#include "memory_page/memory_page.h"
-#include "alloc_block/alloc_block.h"
+#include "ft_malloc_internal.h"
+#include "small/page/small_page.h"
+#include "small/block/small_block.h"
+#include "medium/page/medium_page.h"
+#include "medium/block/medium_block.h"
+#include "large/page/large_page.h"
 
-
-size_t available_memory_size(void* ptr) {
-    t_alloc_block* block = (t_alloc_block*)ptr - 1;
-    t_memory_page* page = find_memory_page(block);
-    if (page == NULL) {
-        errno = EINVAL;
-        return 0;
+size_t available_memory_size(void* ptr, struct s_heap* heap) {
+    t_small_page* small_page = find_in_small_page_list(ptr, heap->small_pages);
+    if (small_page != NULL) {
+        t_small_block* small_block = find_in_small_block_list(ptr, small_page->block_list);
+        if (small_block == NULL) {
+            errno = EINVAL;
+            return 0;
+        }
+        return get_block_size(small_block->curr);
     }
-    return block->size;
+    t_medium_page* medium_page = find_in_medium_page_list(ptr, heap->medium_pages);
+    if (medium_page != NULL) {
+        t_medium_block* medium_block = find_in_medium_block_list(ptr, medium_page->allocated_list);
+        if (medium_block == NULL) {
+            errno = EINVAL;
+            return 0;
+        }
+        return get_block_size(medium_block->curr);
+    }
+    t_large_page* large_page = find_in_large_page_list(ptr, heap->large_pages);
+    if (large_page != NULL) {
+        return get_large_page_data_size(large_page);
+    }
+    errno = EINVAL;
+    return 0;
 }

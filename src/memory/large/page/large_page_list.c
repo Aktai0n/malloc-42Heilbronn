@@ -1,0 +1,46 @@
+
+#include "large_page.h"
+#include "utils.h"
+
+void add_to_large_page_list(t_large_page** list, t_large_page* new_page) {
+    if (*list != NULL) {
+        new_page->next = *list;
+        (*list)->prev = new_page;
+    }
+    *list = new_page;
+}
+
+t_large_page* delete_from_large_page_list(
+    t_large_page** list,
+    t_large_page* to_remove
+) {
+    if (*list == to_remove) {
+        *list = to_remove->next;
+    }
+    t_large_page* prev = to_remove->prev;
+    t_large_page* next = to_remove->next;
+    if (prev != NULL) {
+        prev->next = next;
+    }
+    if (next != NULL) {
+        next->prev = prev;
+    }
+    to_remove->next = NULL;
+    to_remove->prev = NULL;
+    return to_remove;
+}
+
+t_large_page* find_in_large_page_list(
+    const void* ptr,
+    t_large_page* list
+) {
+    while (list != NULL) {
+        const void* data = get_large_page_data(list);
+        // if (ft_is_in_region(ptr, list, list->size)) {
+        if (data == ptr) {
+            return list;
+        }
+        list = list->next;
+    }
+    return NULL;
+}

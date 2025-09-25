@@ -9,7 +9,7 @@ ssize_t ft_putstr(const char* str);
 ssize_t ft_putstr_fd(const char* str, int fd);
 ssize_t ft_putstr_color(const char* color, const char* str);
 
-ssize_t ft_putbyte_hex(uint8_t byte);
+ssize_t ft_putbyte_hex_fd(uint8_t byte, int fd);
 
 size_t ft_strlen(const char* str);
 

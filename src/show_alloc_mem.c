@@ -1,81 +1,146 @@
 
-#include <stdio.h>
-
-#include "ft_malloc.h"
 #include "libft.h"
-#include "memory/memory_page/memory_page.h"
-#include "memory/alloc_block/alloc_block.h"
+#include "ft_malloc_internal.h"
+#include "memory/small/small.h"
+#include "memory/small/block/small_block.h"
+#include "memory/medium/medium.h"
+#include "memory/medium/block/medium_block.h"
+#include "memory/large/page/large_page.h"
 
-static size_t print_alloc_block_(t_alloc_block* block) {
-    size_t size = get_alloc_size(block);
-    void* start = get_alloc_data(block);
-    void* end = (void*)((size_t)start + size);
-    ft_printf("%p - %p : %u bytes\n", start, end, size);
-    return size;
+static void print_block_(int fd, const void* start, const void* end, size_t size) {
+    ft_dprintf(fd, "%p - %p : %u bytes\n", start, end, size);
 }
 
-static size_t print_memory_page_(t_memory_page* page) {
-    if (page->type == TINY_PAGE) {
-        ft_printf("TINY : ");
-    } else if (page->type == SMALL_PAGE) {
-        ft_printf("SMALL : ");
-    } else {
-        ft_printf("LARGE : ");
-    }
-    void* start = (void*)page;
-    void* end = (void*)((size_t)start + page->size);
-    ft_printf("%p - %p\n", start, end);
-
-    t_alloc_block* block = page->allocated_list;
-    size_t total_alloc_size = 0;
-    while (block != NULL) {
-        total_alloc_size += print_alloc_block_(block);
-        block = get_next_block_in_memory(block);
-    }
-    return total_alloc_size;
-}
-
-// static size_t print_memory_pages_(t_memory_page* pages) {
-//     size_t total_alloc_size = 0;
-//     for (t_memory_page* page = pages; page != NULL; page = page->next) {
-//         total_alloc_size += print_memory_page_(page);
-//     }
-//     return total_alloc_size;
-// }
-
-static t_memory_page* find_next_page_(t_memory_page* prev) {
-    t_memory_page* page = NULL;
-    t_memory_page* next = NULL;
+static const t_small_page* get_next_small_page_(
+    const t_small_page* current,
+    const t_small_page* pages
+) {
+    const t_small_page* next = NULL;
     ptrdiff_t min_diff = PTRDIFF_MAX;
-    for (page = g_heap.tiny_pages; page != NULL; page = page->next) {
-        ptrdiff_t diff = page - prev;
+    for (const t_small_page* page = pages; page != NULL; page = page->next) {
+        ptrdiff_t diff = (intptr_t)page - (intptr_t)current;
         if (diff > 0 && diff < min_diff) {
-            next = page;
-        }
-    }
-    for (page = g_heap.small_pages; page != NULL; page = page->next) {
-        ptrdiff_t diff = page - prev;
-        if (diff > 0 && diff < min_diff) {
-            next = page;
-        }
-    }
-    for (page = g_heap.large_pages; page != NULL; page = page->next) {
-        ptrdiff_t diff = page - prev;
-        if (diff > 0 && diff < min_diff) {
+            min_diff = diff;
             next = page;
         }
     }
     return next;
 }
 
-// needs testing!
-void show_alloc_mem(void) {
-    size_t total_alloc_size = 0;
-    t_memory_page* page = find_next_page_(NULL);
-    ft_printf("page: %p\n", page);
+static size_t print_small_(int fd, const t_small_page* pages) {
+    size_t total = 0;
+    const t_small_page* page = get_next_small_page_(NULL, pages);
     while (page != NULL) {
-        total_alloc_size += print_memory_page_(page);
-        page = find_next_page_(page);
+        ft_dprintf(fd, "TINY : %p\n", page);
+        t_small_block* block = page->block_list;
+        while (block != NULL) {
+            if (is_allocated(block->curr)) {
+                size_t size = get_block_size(block->curr);
+                print_block_(
+                    fd,
+                    get_small_block_data(block),
+                    get_small_block_data_end(block),
+                    size
+                );
+                total += size;
+            }
+            block = get_next_small_block(block);
+        }
+        page = get_next_small_page_(page, pages);
     }
-    ft_printf("Total : %u\n", total_alloc_size);
+    return total;
+}
+
+static const t_medium_page* get_next_medium_page_(
+    const t_medium_page* current,
+    const t_medium_page* pages
+) {
+    const t_medium_page* next = NULL;
+    ptrdiff_t min_diff = PTRDIFF_MAX;
+    for (const t_medium_page* page = pages; page != NULL; page = page->next) {
+        ptrdiff_t diff = (intptr_t)page - (intptr_t)current;
+        if (diff > 0 && diff < min_diff) {
+            min_diff = diff;
+            next = page;
+        }
+    }
+    return next;
+}
+
+static t_medium_block* get_medium_block_list_start_(const t_medium_page* page) {
+    if (page->allocated_list == NULL) {
+        return NULL;
+    }
+    return (t_medium_block*)((uintptr_t)page + sizeof(*page));
+}
+
+static size_t print_medium_(int fd, const t_medium_page* pages) {
+    size_t total = 0;
+    const t_medium_page* page = get_next_medium_page_(NULL, pages);
+    while (page != NULL) {
+        ft_dprintf(fd, "SMALL: %p\n", page);
+        t_medium_block* block = get_medium_block_list_start_(page);
+        while (block != NULL) {
+            if (is_allocated(block->curr)) {
+                size_t size = get_block_size(block->curr);
+                print_block_(
+                    fd,
+                    get_medium_block_data(block),
+                    get_medium_block_data_end(block),
+                    size
+                );
+                total += size;
+            }
+            block = get_next_medium_block(block);
+        }
+        page = get_next_medium_page_(page, pages);
+    }
+    return total;
+}
+
+static t_large_page* get_next_large_page_(
+    t_large_page* current,
+    t_large_page* pages
+) {
+    t_large_page* next = NULL;
+    ptrdiff_t min_diff = PTRDIFF_MAX;
+    for (t_large_page* page = pages; page != NULL; page = page->next) {
+        ptrdiff_t diff = (intptr_t)page - (intptr_t)current;
+        if (diff > 0 && diff <= min_diff) {
+            min_diff = diff;
+            next = page;
+        }
+    }
+    return next;
+}
+
+static size_t print_large_(int fd, t_large_page* pages) {
+    size_t total = 0;
+    t_large_page* page = get_next_large_page_(NULL, pages);
+    while (page != NULL) {
+        ft_dprintf(fd, "LARGE: %p\n", page);
+        size_t size = get_large_page_data_size(page);
+        print_block_(
+            fd,
+            get_large_page_data(page),
+            get_large_page_end(page),
+            size
+        );
+        total += size;
+        page = get_next_large_page_(page, pages);
+    }
+    return total;
+}
+
+void show_alloc_mem(void) {
+    struct s_heap* heap = &g_heap;
+    int fd = STDOUT_FILENO;
+    size_t total = 0;
+
+    FT_MALLOC_ACQUIRE_LOCK(&g_alloc_mutex);
+    total += print_small_(fd, heap->small_pages);
+    total += print_medium_(fd, heap->medium_pages);
+    total += print_large_(fd, heap->large_pages);
+    FT_MALLOC_RELEASE_LOCK(&g_alloc_mutex);
+    ft_dprintf(fd, "Total: %u bytes\n", total);
 }
